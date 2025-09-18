@@ -32,7 +32,7 @@ const Chatbot = ({ isOpen, onToggle }) => {
 
   const enviarMensagemParaAPI = async (mensagem, sessionIdAtual) => {
     try {
-      const resposta = await fetch(`${API}/chat`, {
+   const resposta = await fetch(`${BACKEND_URL}/api/chat`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
