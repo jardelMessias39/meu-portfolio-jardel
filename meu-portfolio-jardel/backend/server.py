@@ -42,11 +42,20 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 api_router = APIRouter(prefix="/api")
 
-# Configure CORS
+# Configure CORS usando a variável de ambiente
+# A variável `FRONTEND_URL` deve ser configurada no Render
+frontend_url = os.environ.get("FRONTEND_URL")
+
+origins = [
+    frontend_url,
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=origins,
     allow_credentials=True,
-    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
