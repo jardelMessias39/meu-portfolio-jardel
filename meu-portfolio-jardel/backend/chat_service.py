@@ -156,7 +156,7 @@ INSTRUÇÕES DE RESPOSTA:
             resposta_fallback = (
                 "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um "
                 "desenvolvedor júnior apaixonado por transformar ideias em código! "
-                "Tenho 3 projetos principais e estou sempre aprendendo. O que você gostaria de saber?"
+                "Tenho  4  projetos principais e 2 em desenvolvimento. E estou sempre aprendendo. O que você gostaria de saber?"
             )
             return resposta_fallback
             
