@@ -164,7 +164,7 @@ INSTRUÇÕES DE RESPOSTA:
             messages_to_openai = [
                 {"role": "system", "content": self.system_message}
             ] + [
-                {"role": "user", "content": msg.content}
+                {"role": msg.role, "content": msg.content}
                 for msg in session.messages
             ]
 
@@ -183,6 +183,20 @@ INSTRUÇÕES DE RESPOSTA:
             await self.save_session(session)
             
             return ai_response_content, session.session_id
+
+        except Exception as e:
+            logger.error(f"Erro ao processar mensagem: {str(e)}")
+            resposta_fallback = "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! O que você gostaria de saber?"
+            
+            # Tenta obter/criar uma nova sessão, caso contrário, usa um fallback
+            try:
+                new_session = await self.get_or_create_session()
+                new_session_id = new_session.session_id
+            except Exception:
+                # Se falhar novamente, use um session_id genérico para não travar o frontend
+                new_session_id = str(uuid.uuid4())
+            
+            return resposta_fallback, new_session_id
 
         except Exception as e:
             logger.error(f"Erro ao processar mensagem: {str(e)}")
