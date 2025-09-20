@@ -54,12 +54,13 @@ origins = [
     frontend_url,
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://meu-portfolio-jardel-iknh6w3yf-jardel-messias-projects.vercel.app"
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    # Use a variável 'origins' aqui para incluir todas as URLs permitidas
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
