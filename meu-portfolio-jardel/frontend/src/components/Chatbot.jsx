@@ -104,7 +104,8 @@ console.log("Resposta da API:", resposta);
         timestamp: new Date()
       };
 
-      setMessages(prev => [...prev, respostaErro]);
+      setMessages(prev => [...prev, respostaBot]);
+
       
       toast({
         title: "Erro de conexão",
