@@ -150,7 +150,7 @@ INSTRUÇÕES DE RESPOSTA:
             {"$set": session.dict()},
             upsert=True
         )
-    
+
     # OS MÉTODOS ABAIXO ESTAVAM FORA DA CLASSE, AGORA FORAM INDENTADOS
     async def process_message(self, message: str, session_id: Optional[str] = None) -> tuple[str, str]:
         try:
@@ -164,7 +164,7 @@ INSTRUÇÕES DE RESPOSTA:
             messages_to_openai = [
                 {"role": "system", "content": self.system_message}
             ] + [
-                {"role": msg.role, "content": msg.content}
+                {"role": "user", "content": msg.content}
                 for msg in session.messages
             ]
 
@@ -188,9 +188,15 @@ INSTRUÇÕES DE RESPOSTA:
             logger.error(f"Erro ao processar mensagem: {str(e)}")
             resposta_fallback = "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! O que você gostaria de saber?"
             
-            # Retorna uma nova sessão em caso de falha
-            new_session = await self.get_or_create_session()
-            return resposta_fallback, new_session.session_id
+            # Tenta obter/criar uma nova sessão, caso contrário, usa um fallback
+            try:
+                new_session = await self.get_or_create_session()
+                new_session_id = new_session.session_id
+            except Exception:
+                # Se falhar novamente, use um session_id genérico para não travar o frontend
+                new_session_id = str(uuid.uuid4())
+            
+            return resposta_fallback, new_session_id
 
     async def get_session_history(self, session_id: str) -> ChatSession:
         """Retorna o histórico de uma sessão"""
