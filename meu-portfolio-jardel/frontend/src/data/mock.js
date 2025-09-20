@@ -4,7 +4,7 @@ export const profileData = {
   name: "Jardel Messias",
   title: "Desenvolvedor Júnior Full Stack",
   bio: "Transformando ideias em código desde junho de 2025. Apaixonado por criar soluções que fazem a diferença na vida das pessoas.",
-  company: "DevClub",
+  studying: "DevClub",
   startDate: "1 de junho de 2025",
   education: "Licenciatura em Informática - UNIT (2019)",
   location: "Brasil",

@@ -5,13 +5,13 @@ import logging
 import openai
 from dotenv import load_dotenv
 import openai
+import uuid
+from typing import Optional
+
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
-# FastAPI app instance and lifespan manager removed from this module.
-
+print("Chave da OpenAI:", os.getenv("OPENAI_API_KEY"))
 
 logger = logging.getLogger(__name__)
 
@@ -114,18 +114,16 @@ INSTRUÇÕES DE RESPOSTA:
 - Use linguagem simples e clara
 - Evite termos técnicos em inglês sem explicação
 """
-
     def send_message_to_openai(self, message: str) -> str:
         response = self.openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": self.system_message},
                 {"role": "user", "content": message}
             ]
         )
         return response.choices[0].message.content
-        return response.choices[0].message.content
-
+    
     async def get_or_create_session(self, session_id: str = None) -> ChatSession:
         """Busca uma sessão existente ou cria uma nova"""
         if session_id:
@@ -152,36 +150,47 @@ INSTRUÇÕES DE RESPOSTA:
             {"$set": session.dict()},
             upsert=True
         )
-    async def process_message(self, session_id: str, message: str) -> str:
+    
+    # OS MÉTODOS ABAIXO ESTAVAM FORA DA CLASSE, AGORA FORAM INDENTADOS
+    async def process_message(self, message: str, session_id: Optional[str] = None) -> tuple[str, str]:
         try:
+            session = await self.get_or_create_session(session_id)
+            
+            # Adiciona a nova mensagem do usuário
+            user_msg = ChatMessage(role="user", content=message)
+            session.messages.append(user_msg)
+            
+            # Formata o histórico da conversa para enviar à OpenAI
+            messages_to_openai = [
+                {"role": "system", "content": self.system_message}
+            ] + [
+                {"role": msg.role, "content": msg.content}
+                for msg in session.messages
+            ]
+
+            # Envia para a OpenAI
             response = self.openai_client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": self.system_message},
-                    {"role": "user", "content": message}
-                ]
+                model="gpt-3.5-turbo",
+                messages=messages_to_openai
             )
-            ai_response = response.choices[0].message.content
-
-            # Salva no MongoDB
-            self.db["chat_messages"].insert_one({
-                "session_id": session_id,
-                "user_message": message,
-                "ai_response": ai_response,
-                "timestamp": datetime.utcnow()
-            })
-
-            return ai_response
+            ai_response_content = response.choices[0].message.content
+            
+            # Adiciona a resposta do assistente à sessão
+            ai_msg = ChatMessage(role="assistant", content=ai_response_content)
+            session.messages.append(ai_msg)
+            
+            # Salva a sessão no banco de dados
+            await self.save_session(session)
+            
+            return ai_response_content, session.session_id
 
         except Exception as e:
             logger.error(f"Erro ao processar mensagem: {str(e)}")
-            resposta_fallback = (
-                "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um "
-                "desenvolvedor júnior apaixonado por transformar ideias em código! "
-                "Tenho  4  projetos principais e 2 em desenvolvimento. E estou sempre aprendendo. O que você gostaria de saber?"
-            )
-            return resposta_fallback
+            resposta_fallback = "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! O que você gostaria de saber?"
             
+            # Retorna uma nova sessão em caso de falha
+            new_session = await self.get_or_create_session()
+            return resposta_fallback, new_session.session_id
 
     async def get_session_history(self, session_id: str) -> ChatSession:
         """Retorna o histórico de uma sessão"""

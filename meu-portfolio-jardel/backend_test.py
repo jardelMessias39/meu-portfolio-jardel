@@ -11,7 +11,9 @@ import os
 from datetime import datetime
 
 # URL do backend a partir do frontend/.env
-BACKEND_URL = "https://prompt-portfolio-bot.preview.emergentagent.com/api"
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000/api")
+from dotenv import load_dotenv
+load_dotenv()
 
 class ChatbotTester:
     def __init__(self):

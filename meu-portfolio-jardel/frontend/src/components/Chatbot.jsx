@@ -4,7 +4,9 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '../hooks/use-toast';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+
 const API = `${BACKEND_URL}/api`;
 
 const Chatbot = ({ isOpen, onToggle }) => {
@@ -31,29 +33,31 @@ const Chatbot = ({ isOpen, onToggle }) => {
   }, [messages, isTyping]);
 
   const enviarMensagemParaAPI = async (mensagem, sessionIdAtual) => {
-    try {
-   const resposta = await fetch(`${BACKEND_URL}/api/chat`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          message: mensagem,
-          session_id: sessionIdAtual 
-        })
-      });
-      
-      if (!resposta.ok) {
-        throw new Error(`Erro HTTP! status: ${resposta.status}`);
-      }
-      
-      const dados = await resposta.json();
-      return dados;
-    } catch (erro) {
-      console.error('Erro ao enviar mensagem para a API:', erro);
-      throw erro;
+  try {
+    const resposta = await fetch(`${BACKEND_URL}/api/chat`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        message: mensagem,
+        session_id: sessionIdAtual 
+      })
+    });
+
+    if (!resposta.ok) {
+      throw new Error(`Erro HTTP! status: ${resposta.status}`);
     }
-  };
+
+    const dados = await resposta.json();
+    return dados;
+
+  } catch (erro) {
+    console.error('Erro ao enviar mensagem para a API:', erro);
+    throw erro;
+  }
+};
+
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -89,9 +93,11 @@ const Chatbot = ({ isOpen, onToggle }) => {
       
     } catch (erro) {
       console.error('Erro:', erro);
-      
-      // Resposta de fallback em caso de erro
-      const respostaErro = {
+
+      const resposta = await enviarMensagemParaAPI(mensagemAtual, sessionId);
+console.log("Resposta da API:", resposta);
+
+      const respostaBot = {
         id: Date.now() + 1,
         type: 'bot',
         content: "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! Tenho 3 projetos principais e estou sempre aprendendo. O que você gostaria de saber?",
