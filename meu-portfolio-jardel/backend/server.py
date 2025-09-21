@@ -49,6 +49,7 @@ api_router = APIRouter(prefix="/api")
 # Configure CORS usando a variável de ambiente
 # A variável `FRONTEND_URL` deve ser configurada no Render
 frontend_url = os.environ.get("FRONTEND_URL")
+frontend_url = os.environ.get("FRONTEND_URL")
 
 origins = [
     frontend_url,
@@ -59,16 +60,11 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://meu-portfolio-jardel-vwqe-r523lfo4y-jardel-messias-projects.vercel.app"
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Rotas
 @api_router.get("/")
 async def root():
