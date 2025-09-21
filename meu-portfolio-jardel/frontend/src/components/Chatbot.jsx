@@ -4,10 +4,10 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '../hooks/use-toast';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API_URL = `${process.env.REACT_APP_API_BASE_URL}/api/chat`;
 
 
-const API = `${BACKEND_URL}/api`;
+const API = `${API_URL}/api`;
 
 const Chatbot = ({ isOpen, onToggle }) => {
   const [messages, setMessages] = useState([
