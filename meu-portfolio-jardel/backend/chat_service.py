@@ -123,7 +123,7 @@ INSTRUÇÕES DE RESPOSTA:
             ]
         )
         return response.choices[0].message.content
-    
+
     async def get_or_create_session(self, session_id: str = None) -> ChatSession:
         """Busca uma sessão existente ou cria uma nova"""
         if session_id:
@@ -198,7 +198,7 @@ INSTRUÇÕES DE RESPOSTA:
             
             return resposta_fallback, new_session_id
 
-       
+        
 
     async def get_session_history(self, session_id: str) -> ChatSession:
         """Retorna o histórico de uma sessão"""
