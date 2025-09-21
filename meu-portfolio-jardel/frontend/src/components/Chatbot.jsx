@@ -34,7 +34,7 @@ const Chatbot = ({ isOpen, onToggle }) => {
 
   const enviarMensagemParaAPI = async (mensagem, sessionIdAtual) => {
   try {
-    const resposta = await fetch(`${BACKEND_URL}/api/chat`, {
+    const response = await fetch(API_URL,  {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
