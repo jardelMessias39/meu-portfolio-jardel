@@ -59,8 +59,11 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    # Use a variável 'origins' aqui para incluir todas as URLs permitidas
-    allow_origins=origins,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://meu-portfolio-jardel-vwqe-r523lfo4y-jardel-messias-projects.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -83,6 +86,13 @@ async def create_status_check(input: StatusCheckCreate):
     _ = await db.status_checks.insert_one(status_obj.dict())
     return status_obj
 
+
+@app.middleware("http")
+async def log_origin(request: Request, call_next):
+    origin = request.headers.get("origin")
+    print("Origin da requisição:", origin)
+    response = await call_next(request)
+    return response
 
 @api_router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: Request):
