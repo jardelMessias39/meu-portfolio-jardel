@@ -4,11 +4,11 @@ from datetime import datetime
 import logging
 import openai
 from dotenv import load_dotenv
-import openai
 import uuid
 from typing import Optional
 
 
+# Carrega variáveis de ambiente aqui, fora da classe
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 print("Chave da OpenAI:", os.getenv("OPENAI_API_KEY"))
@@ -138,6 +138,9 @@ INSTRUÇÕES DE RESPOSTA:
                     updated_at=session_data["updated_at"],
                     messages=messages
                 )
+        
+        # Este é o bloco que cria uma nova sessão, só deve ser executado se não
+        # houver session_id ou se a sessão não for encontrada.
         new_session = ChatSession()
         await self.db.chat_sessions.insert_one(new_session.dict())
         return new_session
@@ -151,7 +154,6 @@ INSTRUÇÕES DE RESPOSTA:
             upsert=True
         )
 
-    # OS MÉTODOS ABAIXO ESTAVAM FORA DA CLASSE, AGORA FORAM INDENTADOS
     async def process_message(self, message: str, session_id: Optional[str] = None) -> tuple[str, str]:
         try:
             session = await self.get_or_create_session(session_id)
@@ -197,8 +199,6 @@ INSTRUÇÕES DE RESPOSTA:
                 new_session_id = str(uuid.uuid4())
             
             return resposta_fallback, new_session_id
-
-        
 
     async def get_session_history(self, session_id: str) -> ChatSession:
         """Retorna o histórico de uma sessão"""
