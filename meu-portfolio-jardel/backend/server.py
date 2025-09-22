@@ -10,7 +10,7 @@ from models import StatusCheck, StatusCheckCreate, ChatRequest, ChatResponse
 from chat_service import ChatService
 import traceback
 from typing import List
-
+from fastapi.responses import JSONResponse
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv()

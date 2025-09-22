@@ -6,7 +6,7 @@ import openai
 from dotenv import load_dotenv
 import uuid
 from typing import Optional
-
+from fastapi.responses import JSONResponse
 
 # Carrega variáveis de ambiente aqui, fora da classe
 load_dotenv()
@@ -184,7 +184,8 @@ INSTRUÇÕES DE RESPOSTA:
             # Salva a sessão no banco de dados
             await self.save_session(session)
             
-            return ai_response_content, session.session_id
+            return str(ai_response_content), str(session.session_id)
+
 
         except Exception as e:
             logger.error(f"Erro ao processar mensagem: {str(e)}")
@@ -198,7 +199,8 @@ INSTRUÇÕES DE RESPOSTA:
                 # Se falhar novamente, use um session_id genérico para não travar o frontend
                 new_session_id = str(uuid.uuid4())
             
-            return resposta_fallback, new_session_id
+            return str(resposta_fallback), str(new_session_id)
+
 
     async def get_session_history(self, session_id: str) -> ChatSession:
         """Retorna o histórico de uma sessão"""
