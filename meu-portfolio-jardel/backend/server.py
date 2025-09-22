@@ -56,7 +56,7 @@ origins = [
     frontend_url,
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://meu-portfolio-jardel-iknh6w3yf-jardel-messias-projects.vercel.app"
+    "https://meu-portfolio-jardel-vwqe-kul83wy9j-jardel-messias-projects.vercel.app",
 ]
 
 app.add_middleware(
