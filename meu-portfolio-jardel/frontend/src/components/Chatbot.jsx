@@ -7,7 +7,7 @@ import { useToast } from '../hooks/use-toast';
 const API_URL = `${process.env.REACT_APP_API_BASE_URL}/api/chat`;
 
 
-const API = `${API_URL}/api`;
+
 
 const Chatbot = ({ isOpen, onToggle }) => {
   const [messages, setMessages] = useState([
@@ -45,11 +45,11 @@ const Chatbot = ({ isOpen, onToggle }) => {
       })
     });
 
-    if (!resposta.ok) {
-      throw new Error(`Erro HTTP! status: ${resposta.status}`);
+    if (!response.ok) {
+      throw new Error(`Erro HTTP! status: ${response.status}`);
     }
 
-    const dados = await resposta.json();
+    const dados = await response.json();
     return dados;
 
   } catch (erro) {

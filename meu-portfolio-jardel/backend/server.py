@@ -48,8 +48,9 @@ api_router = APIRouter(prefix="/api")
 
 # Configure CORS usando a variável de ambiente
 # A variável `FRONTEND_URL` deve ser configurada no Render
-frontend_url = os.environ.get("FRONTEND_URL")
-frontend_url = os.environ.get("FRONTEND_URL")
+frontend_url = os.environ.get("FRONTEND_URL", "https://meu-portfolio-jardel-vwqe-l7r627pap-jardel-messias-projects.vercel.app")
+
+
 
 origins = [
     frontend_url,
