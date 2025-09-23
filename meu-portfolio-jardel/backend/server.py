@@ -11,6 +11,7 @@ from chat_service import ChatService
 import traceback
 from typing import List
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv()
@@ -61,10 +62,10 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # libera acesso de qualquer origem
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # permite todos os métodos (POST, GET, etc.)
+    allow_headers=["*"],  # permite todos os headers
 )
 # Rotas
 @api_router.get("/")
