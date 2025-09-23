@@ -49,7 +49,7 @@ api_router = APIRouter(prefix="/api")
 
 frontend_url = os.environ.get("FRONTEND_URL", "https://meu-portfolio-jardel.vercel.app")
 origins = [
-    "https://meu-portfolio-jardel.vercel.app",  # ← domínio principal
+   frontend_url,
     "http://localhost:3000",                    # ← para testes locais
     "http://localhost:5173"
 ]
