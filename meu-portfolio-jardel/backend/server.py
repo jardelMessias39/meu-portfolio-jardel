@@ -131,8 +131,8 @@ async def get_chat_session(session_id: str):
                 for msg in sessao.messages
             ]
         }
-    except HTTPException as http_exc:
-        raise http_exc
+    except HTTPException:
+        raise
 
 
 # Inclua o router APENAS depois de todas as rotas estarem definidas
