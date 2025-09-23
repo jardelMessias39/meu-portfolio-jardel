@@ -48,20 +48,18 @@ app = FastAPI(lifespan=lifespan)
 api_router = APIRouter(prefix="/api")
 
 frontend_url = os.environ.get("FRONTEND_URL", "https://meu-portfolio-jardel.vercel.app")
-
 origins = [
-    frontend_url,
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "https://meu-portfolio-jardel.vercel.app",  # ← esse é o que está dando erro agora
+    "https://meu-portfolio-jardel.vercel.app",  # ← domínio principal
+    "http://localhost:3000",                    # ← para testes locais
+    "http://localhost:5173"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # lista segura e explícita
+    allow_origins=origins,              # lista explícita
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Rotas
