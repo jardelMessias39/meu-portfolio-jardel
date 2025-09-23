@@ -122,63 +122,64 @@ INSTRUÇÕES DE RESPOSTA:
 - Use linguagem simples e clara
 - Evite termos técnicos em inglês sem explicação
 """
-    async def get_or_create_session(self, session_id: Optional[str] = None) -> ChatSession:
-        if session_id:
-            session_data = await self.db.chat_sessions.find_one({"session_id": session_id})
-            if session_data:
-                return ChatSession(**session_data)
-        
-        new_session = ChatSession()
-        await self.db.chat_sessions.insert_one(new_session.dict())
-        return new_session
-
-    async def save_session(self, session: ChatSession):
-        session.updated_at = datetime.now(timezone.utc)
-        await self.db.chat_sessions.update_one(
-            {"session_id": session.session_id},
-            {"$set": session.dict()},
-            upsert=True
-        )
-
-    async def process_message(self, message: str, session_id: Optional[str] = None) -> tuple[str, str]:
-        try:
-            session = await self.get_or_create_session(session_id)
-            
-            user_msg = ChatMessage(role="user", content=message)
-            session.messages.append(user_msg)
-            
-            messages_to_openai = [
-                {"role": "system", "content": self.system_message}
-            ] + [
-                {"role": msg.role, "content": msg.content}
-                for msg in session.messages
-            ]
-
-            response = self.openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=messages_to_openai
-            )
-            ai_response_content = response.choices[0].message.content
-            
-            ai_msg = ChatMessage(role="assistant", content=ai_response_content)
-            session.messages.append(ai_msg)
-            
-            await self.save_session(session)
-            
-            return ai_response_content, session.session_id
-
-        except Exception:
-            logger.error(f"Erro ao processar mensagem: {traceback.format_exc()}")
-            resposta_fallback = "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! O que você gostaria de saber?"
-            
-            # Garantir que um session_id válido seja retornado mesmo em caso de falha.
-            if session_id:
-                return resposta_fallback, session_id
-            else:
-                return resposta_fallback, str(uuid.uuid4())
-
-    async def get_session_history(self, session_id: str) -> Optional[ChatSession]:
+async def get_or_create_session(self, session_id: Optional[str] = None) -> ChatSession:
+    if session_id:
         session_data = await self.db.chat_sessions.find_one({"session_id": session_id})
         if session_data:
             return ChatSession(**session_data)
-        return None
+    
+    new_session = ChatSession()
+    await self.db.chat_sessions.insert_one(new_session.dict())
+    return new_session
+
+async def save_session(self, session: ChatSession):
+    session.updated_at = datetime.now(timezone.utc)
+    await self.db.chat_sessions.update_one(
+        {"session_id": session.session_id},
+        {"$set": session.dict()},
+        upsert=True
+    )
+    
+async def process_message(self, message: str, session_id: Optional[str] = None) -> tuple[str, str]:
+    try:
+        session = await self.get_or_create_session(session_id)
+
+        user_msg = ChatMessage(role="user", content=message)
+        session.messages.append(user_msg)
+        
+        messages_to_openai = [
+            {"role": "system", "content": self.system_message}
+        ] + [
+            {"role": msg.role, "content": msg.content}
+            for msg in session.messages
+        ]
+
+        response = self.openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=messages_to_openai
+        )
+        ai_response_content = response.choices[0].message.content
+        
+        ai_msg = ChatMessage(role="assistant", content=ai_response_content)
+        session.messages.append(ai_msg)
+        
+        await self.save_session(session)
+        
+        return ai_response_content, session.session_id
+
+    except Exception as e:
+        logger.error(f"Erro ao processar mensagem: {str(e)}")
+        resposta_fallback = "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! O que você gostaria de saber?"
+        
+        # Este é o ponto crucial: garantir que o retorno seja sempre 2 valores
+        if session_id:
+            return resposta_fallback, session_id
+        else:
+            new_session_id = str(uuid.uuid4())
+            return resposta_fallback, new_session_id
+
+async def get_session_history(self, session_id: str) -> Optional[ChatSession]:
+    session_data = await self.db.chat_sessions.find_one({"session_id": session_id})
+    if session_data:
+        return ChatSession(**session_data)
+    return None
