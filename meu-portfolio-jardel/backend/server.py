@@ -47,26 +47,23 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 api_router = APIRouter(prefix="/api")
 
-# Configure CORS usando a variável de ambiente
-# A variável `FRONTEND_URL` deve ser configurada no Render
-frontend_url = os.environ.get("FRONTEND_URL", "https://meu-portfolio-jardel-vwqe-l7r627pap-jardel-messias-projects.vercel.app")
-
-
+frontend_url = os.environ.get("FRONTEND_URL", "https://meu-portfolio-jardel.vercel.app")
 
 origins = [
     frontend_url,
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://meu-portfolio-jardel-vwqe-kul83wy9j-jardel-messias-projects.vercel.app",
+    "https://meu-portfolio-jardel.vercel.app",  # ← esse é o que está dando erro agora
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # libera acesso de qualquer origem
+    allow_origins=origins,         # lista segura e explícita
     allow_credentials=True,
-    allow_methods=["*"],  # permite todos os métodos (POST, GET, etc.)
-    allow_headers=["*"],  # permite todos os headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 # Rotas
 @api_router.get("/")
 async def root():
