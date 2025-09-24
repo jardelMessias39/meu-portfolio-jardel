@@ -1,6 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Body
 from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
@@ -85,6 +84,8 @@ async def log_origin(request: Request, call_next):
     origin = request.headers.get("origin")
     print("Origin da requisição:", origin)
     response = await call_next(request)
+
+    print("Retornando:", (response, response.headers.get("X-Session-ID")))
     return response
 
 @api_router.post("/chat", response_model=ChatResponse)
@@ -134,6 +135,7 @@ async def get_chat_session(session_id: str):
         sessao = await chat_service.get_session_history(session_id)
         if not sessao:
             raise HTTPException(status_code=404, detail="Sessão não encontrada")
+        print("Retornando:", (sessao, sessao.session_id))
         return {
             "session_id": sessao.session_id,
             "messages": [
