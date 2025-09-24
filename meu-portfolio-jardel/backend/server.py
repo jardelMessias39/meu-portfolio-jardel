@@ -97,11 +97,26 @@ async def chat_endpoint(request: Request):
         if not message:
             raise HTTPException(status_code=400, detail="Campo 'message' é obrigatório")
 
-        resposta, nova_session_id = await chat_service.process_message(
-            message=message,
-            session_id=session_id
-        )
+        # Início do bloco de diagnóstico
+        try:
+            # Tenta descompactar os valores normalmente
+            resposta, nova_session_id = await chat_service.process_message(
+                message=message,
+                session_id=session_id
+            )
+        except ValueError as ve:
+            # Se a descompactação falhar, pegue o retorno da função e imprima
+            returned_value = await chat_service.process_message(
+                message=message,
+                session_id=session_id
+            )
+            logger.error(f"ValueError capturado! O valor retornado foi: {returned_value} (tipo: {type(returned_value)})")
+            # Propositalmente relança o erro para que o bloco 'except' externo o pegue.
+            raise ve
 
+        # Fim do bloco de diagnóstico
+        
+        print("Resposta gerada:", resposta, "Session ID:", nova_session_id)
         return ChatResponse(
             response=resposta,
             session_id=nova_session_id
@@ -111,7 +126,6 @@ async def chat_endpoint(request: Request):
         traceback.print_exc()
         logger.error(f"Erro no chat_endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
-    
 
 
 @api_router.get("/chat/sessions/{session_id}")
