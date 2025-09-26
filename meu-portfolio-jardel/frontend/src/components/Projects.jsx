@@ -140,18 +140,26 @@ const Projects = () => {
         {/* Call to Action */}
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl p-8 shadow-lg border">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Quer ver mais projetos em desenvolvimento?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Estou sempre trabalhando em novos projetos e aprendendo novas tecnologias. 
-              Acompanhe meu progresso no GitHub!
-            </p>
-            <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
-              <Github className="h-5 w-5 mr-2" />
-              Ver GitHub
-            </Button>
-          </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Quer ver mais projetos em desenvolvimento?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Estou sempre trabalhando em novos projetos e aprendendo novas tecnologias. 
+              Acompanhe meu progresso no GitHub!
+            </p>
+            
+            {/* Adicione o <a> envolvendo o Button aqui */}
+            <a
+              href="https://github.com/jardelMessias39" 
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
+                <Github className="h-5 w-5 mr-2" />
+                Ver GitHub
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
     </section>

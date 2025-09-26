@@ -36,7 +36,7 @@ export const projects = [
     objective: "Desenvolver concentração, percepção visual e coordenação motora",
     technologies: ["HTML", "CSS", "JavaScript"],
     image: "https://customer-assets.emergentagent.com/job_prompt-portfolio-bot/artifacts/78a9s9os_shuffle.png",
-    demo: "Jardel@DESKTOP-036JIKT MINGW64 ~/OneDrive/desktopnovo24/OneDrive/Documentos/devclab/projeto embrulhado (github.statusBa)",
+    demo: "https://jardelmessias39.github.io/projeto-embrulhado/",
     github: "https://github.com/jardelMessias39/projeto-embrulhado"
   },
   {
