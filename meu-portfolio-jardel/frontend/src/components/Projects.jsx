@@ -97,39 +97,40 @@ const Projects = () => {
                   </ul>
                 </div>
 
-                {/* Action Buttons */}
+                                {/* Action Buttons */}
                 <div className="flex gap-3">
-                  <Button 
-                    size="sm" 
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                  >
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center h-full"
+                    {/* Botão DEMO (Tag <a> envolve o <Button>) */}
+                    <a 
+                        href={project.demo} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex-1" // Garante o alinhamento correto com o CSS Flex
                     >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Demo
+                        <Button 
+                            size="sm" 
+                            className="w-full bg-blue-600 hover:bg-blue-700"
+                        >
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Demo
+                        </Button>
                     </a>
-                  </Button>
-                  
-                  {/* Botão CÓDIGO (GitHub) */}
-                  <a
-                    href={project.github} // <--- Adiciona a URL do GitHub
-                    target="_blank" // <--- Abre em uma nova aba
-                    rel="noopener noreferrer"
-                    className="flex-1"
-                  >
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="w-full" // w-full para preencher o <a>
-                    >
-                      <Github className="h-4 w-4 mr-2" />
-                      Código
-                    </Button>
-                  </a>
+                    
+                    {/* Botão CÓDIGO (GitHub - Tag <a> já estava correta) */}
+                    <a
+                        href={project.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex-1"
+                    >
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="w-full"
+                        >
+                            <Github className="h-4 w-4 mr-2" />
+                            Código
+                        </Button>
+                    </a>
                 </div>
               </div>
             </div>
