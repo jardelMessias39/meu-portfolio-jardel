@@ -101,19 +101,35 @@ const Projects = () => {
                 <div className="flex gap-3">
                   <Button 
                     size="sm" 
-                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    className="w-full bg-blue-600 hover:bg-blue-700"
                   >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Demo
+                    <a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center h-full"
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Demo
+                    </a>
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="flex-1"
-                  >
-                    <Github className="h-4 w-4 mr-2" />
-                    Código
-                  </Button>
+                  
+                  {/* Botão CÓDIGO (GitHub) */}
+                  <a
+                    href={project.github} // <--- Adiciona a URL do GitHub
+                    target="_blank" // <--- Abre em uma nova aba
+                    rel="noopener noreferrer"
+                    className="flex-1"
+                  >
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full" // w-full para preencher o <a>
+                    >
+                      <Github className="h-4 w-4 mr-2" />
+                      Código
+                    </Button>
+                  </a>
                 </div>
               </div>
             </div>

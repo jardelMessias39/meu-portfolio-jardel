@@ -3,29 +3,31 @@ import { Code, Lightbulb, Wrench } from 'lucide-react';
 import { skills } from '../data/mock';
 
 const Skills = () => {
-  const skillCategories = [
-    {
-      title: "Tecnologias Atuais",
-      icon: <Code className="h-6 w-6" />,
-      skills: skills.current,
-      color: "blue",
-      description: "Linguagens que estou dominando atualmente"
-    },
-    {
-      title: "Próximos Passos",
-      icon: <Lightbulb className="h-6 w-6" />,
-      skills: skills.learning,
-      color: "purple",
-      description: "Tecnologias que pretendo aprender em breve"
-    },
-    {
-      title: "Ferramentas",
-      icon: <Wrench className="h-6 w-6" />,
-      skills: skills.tools,
-      color: "green",
-      description: "Ferramentas que utilizo no desenvolvimento"
-    }
-  ];
+  const skillCategories = [
+    {
+      // Antigo: "Tecnologias Atuais"
+      title: "Frontend", // Título Atualizado para refletir a nova chave
+      icon: <Code className="h-6 w-6" />,
+      skills: skills.frontend, // <-- CORREÇÃO AQUI: DE 'skills.current' PARA 'skills.frontend'
+      color: "blue",
+      description: "Tecnologias que utilizo para a interface e interação do usuário."
+    },
+    {
+      // Antigo: "Próximos Passos"
+      title: "Backend", // Título Atualizado para refletir a nova chave
+      icon: <Lightbulb className="h-6 w-6" />,
+      skills: skills.backend, // <-- CORREÇÃO AQUI: DE 'skills.learning' PARA 'skills.backend'
+      color: "purple",
+      description: "Tecnologias para lógica de servidor e banco de dados (próximo foco)."
+    },
+    {
+      title: "Ferramentas",
+      icon: <Wrench className="h-6 w-6" />,
+      skills: skills.tools, // Esta chave já estava correta
+      color: "green",
+      description: "Ferramentas que utilizo no desenvolvimento"
+    }
+  ];
 
   const getColorClasses = (color) => {
     const colors = {

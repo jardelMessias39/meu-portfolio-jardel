@@ -90,7 +90,7 @@ export const projects = [
     objective: "Oferecer uma experiência imersiva e educativa sobre os principais destinos turísticos do Brasil",
     technologies: ["HTML", "CSS", "JavaScript", "BrMap"],
     
-    image:  "data/turismo-preview.png",
+    image:  "/turismo-preview.png",
     demo: "https://jardelmessias39.github.io/turismo/",
     github: "https://github.com/jardelMessias39/turismo"
 },
@@ -109,7 +109,7 @@ export const projects = [
   ],
   objective: "Criar uma experiência de aventura e superação com elementos de estratégia e evolução",
   technologies: ["HTML5", "CSS3", "JavaScript", "Canvas API"],
-  image: "data/crocodilo-preview.png", // substitua pelo print que você tirar do protótipo
+  image: "/crocodilo-preview.png", // substitua pelo print que você tirar do protótipo
   demo: "#", // substitua pelo link do jogo quando estiver disponível
   github: "https://github.com/jardelMessias39/crocodilo-aventura" // ou o repositório correto
 }
