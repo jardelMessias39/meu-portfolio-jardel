@@ -62,33 +62,23 @@ PROJETOS DESENVOLVIDOS:
 - Objetivo: preservar e divulgar a cultura gastronômica brasileira
 - Tecnologias: HTML, CSS, JavaScript
 
-4. **Site de Turismo Acessível**
+4. **Site de Turismo **
 - Plataforma que oferece opções de locais para viajar e aventuras
-- GRANDE DIFERENCIAL: Foco total em acessibilidade
-- Funcionalidades especiais: descrições visuais e auditivas, indicação de locais com rampas, suporte para braile
+- GRANDE DIFERENCIAL: Foco achar os melhores lugares para viajar
 - Público-alvo: todas as pessoas, especialmente com necessidades especiais
-- Objetivo: democratizar o turismo e torná-lo acessível para todos
+- Objetivo: torna o turismo dinamico e acessível para todos
 - Tecnologias: HTML, CSS, JavaScript
 
-5. **Gerador de Link para WhatsApp Comercial**
-- Ferramenta prática para gerar links diretos do WhatsApp
-- Foco na usabilidade: simples e intuitivo, ideal para usuários sem experiência técnica
-- Impacto comercial: otimiza o fluxo de contato entre empresas e consumidores
-- Desenvolvido durante aula com o professor Rodolfo Mori
-- Tecnologias: HTML, CSS, JavaScript
 
 PROJETOS EM DESENVOLVIMENTO:
-6. **Crocodilo Aventura**
+5. **Crocodilo Aventura**
 - Jogo de sobrevivência e evolução na floresta Amazônica
 - Kroko nasce sozinho e precisa crescer, caçar e desenvolver habilidades para salvar sua mãe das garras de uma cobra gigante
 - Sistema de evolução por fases e combate estratégico
 - Idealizado por Jardel Messias
 - Em fase de prototipagem
 
-7. **Site de Turismo Acessível (versão IA)**
-- Protótipo inicial feito com IA, será reconstruído para refletir melhor minha visão original
-- Foco em acessibilidade e inclusão
-- Em revisão
+
 
 MINHA PERSONALIDADE E MOTIVAÇÃO:
 - Pessoa tranquila que sempre corre atrás dos objetivos

@@ -154,7 +154,7 @@ const Projects = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
+              <Button size="lg" className="bg-gray-700 hover:bg-gray-800">
                 <Github className="h-5 w-5 mr-2" />
                 Ver GitHub
               </Button>
