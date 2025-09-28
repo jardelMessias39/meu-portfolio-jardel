@@ -53,7 +53,7 @@ export const projects = [
     objective: "Desenvolver velocidade de digitação, reflexos e coordenação motora",
     technologies: ["HTML", "CSS", "JavaScript"],
     image: "https://customer-assets.emergentagent.com/job_prompt-portfolio-bot/artifacts/mpixj6x1_teladousuario.png",
-    demo: "https://github.com/jardelMessias39/jogodepalavras",
+    demo: "https://jardelmessias39.github.io/jogodepalavras/",
     github: "https://github.com/jardelMessias39/jogodepalavras"
   },
   {
@@ -111,7 +111,7 @@ export const projects = [
   technologies: ["HTML5", "CSS3", "JavaScript", "Canvas API"],
   image: "/crocodilo-preview.png", // substitua pelo print que você tirar do protótipo
   demo: "#", // substitua pelo link do jogo quando estiver disponível
-  github: "https://github.com/jardelMessias39/crocodilo-aventura" // ou o repositório correto
+  github: "#" // ou o repositório correto
 }
 
 ];
