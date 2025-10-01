@@ -70,7 +70,7 @@ export const projects = [
     ],
     objective: "Preservar e divulgar a rica cultura gastronômica brasileira",
     technologies: ["HTML", "CSS", "JavaScript"],
-    image: "https://customer-assets.emergentagent.com/job_prompt-portfolio-bot/artifacts/dg8hmwun_Captura%20de%20tela%202025-07-03%20010054.png",
+    image: "/comida-tipica-preview.png",
     demo: " https://jardelmessias39.github.io/comida-tipica-brasil/",
     github: "https://github.com/jardelMessias39/comida-tipica-brasil"
   },
