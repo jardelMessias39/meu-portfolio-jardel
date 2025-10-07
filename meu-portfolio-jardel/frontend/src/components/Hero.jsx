@@ -19,22 +19,26 @@ const Hero = ({ onChatOpen }) => {
               <span className="text-blue-600 block">Ideias em Código</span>
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-              Desenvolvedor Full Stack apaixonado por criar soluções que fazem a diferença. 
+              Desenvolvedor Full Stack apaixonado por criar soluções que fazem a diferença.
               Focado em acessibilidade e experiência do usuário.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg" 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
-            >
-              Ver Projetos
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            
-            <Button 
-              variant="outline" 
+            {/* CORREÇÃO APLICADA: Envolvendo o Button com <a> e o href="#projects" */}
+            <a href="#projects">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
+              >
+                Ver Projetos
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </a>
+
+            {/* O segundo botão permanece inalterado, pois ele dispara uma função (onClick) */}
+            <Button
+              variant="outline"
               size="lg"
               onClick={onChatOpen}
               className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg"
@@ -80,7 +84,7 @@ const Hero = ({ onChatOpen }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Floating elements */}
           <div className="absolute -top-4 -right-4 bg-white p-3 rounded-full shadow-lg animate-bounce">
             <span className="text-2xl">💻</span>

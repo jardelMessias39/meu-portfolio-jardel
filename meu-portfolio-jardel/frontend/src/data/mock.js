@@ -168,7 +168,7 @@ export const testimonials = [
   {
     name: "Equipe DevClub",
     role: "Cursando na Empresa DevClub",
-    content: "Um desenvolvedor dedicado e sempre disposto a aprender. Seus projetos mostram criatividade e preocupação com acessibilidade.",
+    content: "Um desenvolvedor dedicado e sempre disposto a aprender. Seus projetos mostram criatividade, atenção aos detalhes e uma evolução constante em cada linha de código.",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face"
   },
   {
