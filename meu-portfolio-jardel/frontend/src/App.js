@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import "./App.css";
+import Home from './pages/Home';
 //import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -50,9 +51,11 @@ const Home = () => {
   );
 };
 
+
 function App() {
   return (
     <div className="App">
+      {/* Aqui o BrowserRouter, Routes e Route são reconhecidos */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -60,6 +63,7 @@ function App() {
       </BrowserRouter>
     </div>
   );
+
 }
 
 export default App;
