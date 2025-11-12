@@ -114,7 +114,7 @@ export const projects = [
   github: "#" // ou o repositório correto
 },
 {
-  id: 5, // Use o próximo ID disponível (se o Crocodilo for o 5, use 5 ou 6)
+  id: 6, 
   title: "Dashboard Financeiro PME",
   category: "Data Visualization & Front-End",
   description: "Interface de Análise de Dados desenvolvida para pequenas e médias empresas (PMEs). O projeto transforma dados financeiros brutos em um Dashboard visual, limpo e intuitivo para otimizar a tomada de decisão.",
