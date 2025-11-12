@@ -78,8 +78,19 @@ PROJETOS EM DESENVOLVIMENTO:
 - Idealizado por Jardel Messias
 - Em fase de prototipagem
 
+6. **Dashboard Financeiro Pessoal**
+name: "Dashboard Financeiro PME",
+      keywords: ["dashboard", "financeiro", "data", "pme", "visualização", "react"],
+      description: `
+- O Dashboard Financeiro PME** é um projeto chave em meu portfólio, focado em Data Visualization. 
 
+- O Desafio:** Transformar dados brutos e planilhas complexas em uma ferramenta de gestão intuitiva para pequenas e médias empresas.
 
+- A Solução:** Desenvolvi uma Interface de Usuário (UI) limpa e responsiva utilizando **React** e **Tailwind CSS**. A aplicação visualiza métricas financeiras essenciais (como Receita, Custo e Margem Bruta) em gráficos interativos, facilitando a tomada de decisão imediata do gestor.
+        
+- Tecnologias Usadas:** React, JavaScript, HTML5, Tailwind CSS e princípios de Análise Financeira.
+      
+      
 MINHA PERSONALIDADE E MOTIVAÇÃO:
 - Pessoa tranquila que sempre corre atrás dos objetivos
 - GRANDE PAIXÃO: Ver códigos se transformarem em algo visual e funcional
