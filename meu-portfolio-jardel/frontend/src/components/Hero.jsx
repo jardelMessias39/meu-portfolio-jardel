@@ -1,8 +1,9 @@
 import React from 'react';
 import { ArrowRight, Download, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
-import Hero from './Hero'; // Onde está o botão
-import Projects from './Projects'; // Onde está a seção de destino
+// A linha abaixo foi removida pois causava o erro de dupla declaração (importar o componente dele mesmo).
+// import Hero from './Hero'; 
+import Projects from './Projects'; // Onde está a seção de destino (A importação não utilizada não causa erro de compilação, mas pode ser removida se o Projects não for renderizado aqui).
 
 const Hero = ({ onChatOpen }) => {
   return (
