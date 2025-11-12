@@ -112,7 +112,26 @@ export const projects = [
   image: "/crocodilo-preview.png", // substitua pelo print que você tirar do protótipo
   demo: "#", // substitua pelo link do jogo quando estiver disponível
   github: "#" // ou o repositório correto
-}
+},
+{
+  id: 5, // Use o próximo ID disponível (se o Crocodilo for o 5, use 5 ou 6)
+  title: "Dashboard Financeiro PME",
+  category: "Data Visualization & Front-End",
+  description: "Interface de Análise de Dados desenvolvida para pequenas e médias empresas (PMEs). O projeto transforma dados financeiros brutos em um Dashboard visual, limpo e intuitivo para otimizar a tomada de decisão.",
+  features: [
+    "Design responsivo e adaptável a qualquer tela (Mobile First)",
+    "Interface de Usuário (UI) focada em alta usabilidade e clareza",
+    "Visualização de métricas essenciais (Receita, Custos, Margem) em gráficos interativos",
+    "Estrutura de navegação (abas) para diferentes relatórios",
+    "Idealizado por Jardel Messias"
+  ],
+  objective: "Criar uma vitrine digital para o gerenciamento de dados financeiros, demonstrando expertise em lógica Front-End e design de interfaces complexas.",
+  technologies: ["React", "JavaScript (ES6+)", "HTML5", "CSS3", "Tailwind CSS"],
+  image: "/dashboard-pme-preview.png", // Nome do arquivo que você fará upload (seu print)
+  demo: "#", // Deixe como "#" ou "Sem Link Live" (já que não está hospedado)
+  github: "https://github.com/jardelMessias39/Dashboard-Financeiro-PME", // URL do seu repositório PRIVADO (se quiser)
+  link_estudo_caso: "https://docs.google.com/document/d/1gAPCIKKeAYLWj6Ce0nX8X740F0yKYRMy5xDxyj6cp3g/edit?usp=sharing" // Adicione este campo para o link do PDF
+},
 
 ];
 
