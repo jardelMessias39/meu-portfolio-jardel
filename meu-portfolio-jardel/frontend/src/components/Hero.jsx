@@ -33,7 +33,7 @@ const Hero = ({ onChatOpen }) => {
               <Button
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
-                asChild
+               
               >
                 Ver Projetos
                 <ArrowRight className="ml-2 h-5 w-5" />
