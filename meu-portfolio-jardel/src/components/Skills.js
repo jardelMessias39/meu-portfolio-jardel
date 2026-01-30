@@ -115,11 +115,11 @@ const Skills = () => {
             
             <div className="grid sm:grid-cols-3 gap-6 mt-8">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">6+</div>
+                <div className="text-3xl font-bold mb-2">9+</div>
                 <div className="text-blue-100">Meses de Experiência</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">3</div>
+                <div className="text-3xl font-bold mb-2">7</div>
                 <div className="text-blue-100">Projetos Concluídos</div>
               </div>
               <div className="text-center">

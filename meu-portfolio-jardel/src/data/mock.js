@@ -15,104 +15,109 @@ export const profileData = {
 };
 
 export const skills = {
-  frontend: ["HTML", "CSS", "JavaScript", "React"],
-  backend: ["Node.js", "MongoDB"],
-  tools: ["Git", "VS Code", "Figma", "Vercel", "Render"]
+  frontend: ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS"],
+  backend: ["Node.js", "MongoDB", "Python", "FastAPI", "OpenAI API"],
+  tools: ["Git", "VS Code", "Figma", "Vercel", "Render", "ElevenLabs"]
 };
 
 
-export const projects = [
+ export const projects = [
   {
     id: 1,
-    title: "Jogo Embaralhado (Shuffle)",
+    title: "Jogo Embaralhado",
     category: "Game Development",
-    description: "Quebra-cabeça interativo onde o usuário escolhe uma imagem e define em quantas partes quer dividi-la para depois remontar. Inclui diferentes imagens temáticas do Brasil.",
-    features: [
-      "Múltiplas opções de divisão (4x2, 4x3, etc.)",
-      "Imagens temáticas brasileiras", 
-      "Interface intuitiva com modo difícil",
-      "Sistema visual de peças embaralhadas"
-    ],
-    objective: "Desenvolver concentração, percepção visual e coordenação motora",
-    technologies: ["HTML", "CSS", "JavaScript"],
-    image: "https://customer-assets.emergentagent.com/job_prompt-portfolio-bot/artifacts/78a9s9os_shuffle.png",
-    demo: "Jardel@DESKTOP-036JIKT MINGW64 ~/OneDrive/desktopnovo24/OneDrive/Documentos/devclab/projeto embrulhado (github.statusBa)",
-    github: "https://github.com/jardelMessias39/projeto-embrulhado"
+    image: "/Shuffle-preview.png",
+    description: "Um quebra-cabeça interativo que desafia a percepção lógica do usuário.",
+    objective: "Explorar a manipulação de canvas e suporte avançado para dispositivos móveis.",
+    technologies: ["JavaScript", "HTML5", "CSS3", "Web Audio API"],
+    features: ["Rotação de peças", "Suporte a Touch Events", "Playlist de fundo"],
+    github: "https://github.com/jardelMessias39/projeto-embrulhado", // Substitua pelo seu link real
+    demo: "https://jardelmessias39.github.io/projeto-embrulhado/" // Substitua pelo seu link real
   },
   {
     id: 2,
     title: "Chuva de Palavras",
-    category: "Game Development", 
-    description: "Jogo de digitação espacial onde palavras caem do céu como uma chuva cósmica. O jogador deve digitá-las rapidamente antes que atinjam o solo.",
-    features: [
-      "Tela inicial com entrada de nome do jogador",
-      "Visual espacial com efeito de estrelas",
-      "Interface limpa e moderna",
-      "Sistema de confirmação de jogador"
-    ],
-    objective: "Desenvolver velocidade de digitação, reflexos e coordenação motora",
-    technologies: ["HTML", "CSS", "JavaScript"],
-    image: "https://customer-assets.emergentagent.com/job_prompt-portfolio-bot/artifacts/mpixj6x1_teladousuario.png",
-    demo: "https://github.com/jardelMessias39/jogodepalavras",
-    github: "https://github.com/jardelMessias39/jogodepalavras"
+    category: "Game Development",
+    image: "/chuvadepalavra-preview.png",
+    description: "Jogo de digitação frenético para testar agilidade e coordenação.",
+    objective: "Praticar manipulação de DOM em tempo real e lógica de persistência.",
+    technologies: ["JavaScript", "LocalStorage", "Animações CSS"],
+    features: ["Sistema de Recordes", "Dificuldade Progressiva", "Feedback Visual"],
+    github: "https://github.com/jardelMessias39/jogodepalavras",
+    demo: "https://jardelmessias39.github.io/jogodepalavras/"
   },
   {
     id: 3,
-    title: "Site Comidas Típicas do Brasil",
+    title: "Chefes do Brasil",
     category: "Web Development",
-    description: "Plataforma gastronômica dedicada à culinária brasileira, apresentando pratos típicos de diferentes regiões com receitas de chefs renomados.",
-    features: [
-      "Catálogo de comidas típicas regionais",
-      "Seções organizadas: bebidas, doces, receitas",
-      "Design responsivo e atrativo",
-      "Sistema de cadastro e login",
-      "Interface intuitiva para navegação"
-    ],
-    objective: "Preservar e divulgar a rica cultura gastronômica brasileira",
-    technologies: ["HTML", "CSS", "JavaScript"],
-    image: "https://customer-assets.emergentagent.com/job_prompt-portfolio-bot/artifacts/dg8hmwun_Captura%20de%20tela%202025-07-03%20010054.png",
-    demo: " https://jardelmessias39.github.io/comida-tipica-brasil/",
-    github: "https://github.com/jardelMessias39/comida-tipica-brasil"
+    image: "/comida-tipicas-preview.png",
+    description: "Plataforma focada na culinária brasileira, permitindo o compartilhamento de receitas.",
+    objective: "Desenvolver uma aplicação com foco em interação social e comunidade.",
+    technologies: ["React", "CSS Modules", "LocalStorage"],
+    features: ["Mural Interativo", "Postagem de Receitas", "Layout Responsivo"],
+    github: "https://github.com/jardelMessias39/comida-tipica-brasil",
+    demo: "https://jardelmessias39.github.io/comida-tipica-brasil/"
   },
-  
-   {
+  {
     id: 4,
-    title: "Site de Turismo Interativo",
+    title: "DevBurger",
     category: "Web Development",
-    description: "Aplicação web que permite explorar destinos turísticos pelo Brasil. Ao selecionar um estado, o mapa destaca a região e exibe imagens, descrições e curiosidades culturais.",
-    features: [
-      "Mapa interativo com destaque por estado",
-      "Seleção de destinos via dropdown ou clique no mapa",
-      "Card com imagem, título e descrição do destino",
-      "Design responsivo e intuitivo",
-      "Integração com JavaScript puro e BrMap"
-    ],
-    objective: "Oferecer uma experiência imersiva e educativa sobre os principais destinos turísticos do Brasil",
-    technologies: ["HTML", "CSS", "JavaScript", "BrMap"],
-    
-    image:  "data/turismo-preview.png",
-    demo: "https://jardelmessias39.github.io/turismo/",
-    github: "https://github.com/jardelMessias39/turismo"
+    image: "/deliveryburguer-preview.png",
+    description: "Interface completa de delivery para pedidos de lanches em tempo real.",
+    objective: "Implementar lógica de carrinho de compras e gerenciamento de estado.",
+    technologies: ["JavaScript", "Tailwind CSS", "Mobile First"],
+    features: ["Carrinho Dinâmico", "Validação de horário", "Finalização via WhatsApp"],
+    github: "https://github.com/jardelMessias39/dev-burguer-completo",
+    demo: "https://github.com/jardelMessias39/dev-burguer-completo"
+  },
+  {
+    id: 5,
+    title: "App do Tempo",
+    category: "Web Development",
+    image: "/app-do-tempo-preview.png",
+    description: "Consulta de clima global utilizando APIs de meteorologia em tempo real.",
+    objective: "Dominar o consumo de APIs REST e tratamento de dados assíncronos.",
+    technologies: ["JavaScript", "OpenWeather API", "Fetch API"],
+    features: ["Busca por cidade", "Ícones Dinâmicos", "Previsão detalhada"],
+    github: "https://github.com/jardelMessias39/projeto-clima",
+    demo: "https://jardelmessias39.github.io/projeto-clima/"
+  },
+ 
+  {
+  id: 6,
+  title: "Acarajé do Diego / Dois Irmãos",
+  category: "Web Development",
+  image: "/app-Acaraje-preview.png", 
+  description: "Sistema completo de delivery e gestão para acarajeteria, com cardápio dinâmico e painel administrativo.",
+  objective: "Desenvolver uma solução ponta a ponta que automatiza desde a escolha dos recheios pelo cliente até o controle de vendas pelo proprietário.",
+  technologies: ["React", "Tailwind CSS", "Node.js", "LocalStorage"],
+  features: [
+    "Cardápio com personalização de itens (recheios e opcionais)", //
+    "Dashboard administrativo com métricas de vendas e gestão de pedidos", //
+    "Integração de fechamento de pedido via WhatsApp com resumo detalhado", //
+    "Fluxo de checkout completo com opções de entrega, retirada e métodos de pagamento" //
+  ],
+  github: "https://github.com/jardelMessias39/App-Acaraje",
+  demo: " https://acarajedabahia.vercel.app/" 
+},
+{
+  id: 7,
+  title: "Dashboard Financeiro PME",
+  category: "Web Development",
+  image: "/dashboard-pme-preview.png", 
+  description: "Sistema de gestão financeira voltado para pequenas e médias empresas, com foco em fluxo de caixa e análise de métricas.",
+  objective: "Projetar uma interface analítica que transforma dados brutos em decisões estratégicas para empreendedores.",
+  technologies: ["React", "Tailwind CSS", "Recharts/Chart.js", "Lucide Icons"],
+  features: [
+    "Gráficos interativos de receitas vs despesas",
+    "Monitoramento de fluxo de caixa em tempo real",
+    "Gestão de categorias financeiras e extratos detalhados",
+    "Interface otimizada para leitura rápida de indicadores (KPIs)"
+  ],
+  github: "https://github.com/jardelmessias39/Dashboard-Financeiro-PME",
+  demo: "https://github.com/jardelMessias39/Dashboard-Financeiro-PME" 
 },
 
-{
-  id: 5,
-  title: "Crocodilo Aventura",
-  category: "Game Development",
-  description: "Jogo de sobrevivência e evolução ambientado na floresta Amazônica. Kroko nasce sozinho e precisa crescer, caçar e desenvolver habilidades para salvar sua mãe das garras de uma cobra gigante.",
-  features: [
-    "Sistema de evolução por fases",
-    "Combate estratégico com inimigos da selva",
-    "Narrativa envolvente e progressiva",
-    "Ambientação inspirada na biodiversidade amazônica",
-    "Idealizado por Jardel Messias"
-  ],
-  objective: "Criar uma experiência de aventura e superação com elementos de estratégia e evolução",
-  technologies: ["HTML5", "CSS3", "JavaScript", "Canvas API"],
-  image: "data/crocodilo-preview.png", // substitua pelo print que você tirar do protótipo
-  demo: "#", // substitua pelo link do jogo quando estiver disponível
-  github: "https://github.com/jardelMessias39/crocodilo-aventura" // ou o repositório correto
-}
 
 ];
 
@@ -149,19 +154,19 @@ export const courses = [
 ];
 
 export const chatbotResponses = {
-  greeting: "Olá! Sou o assistente virtual do portfólio. Posso te contar sobre a experiência, projetos e objetivos como desenvolvedor. O que gostaria de saber?",
+  greeting: "Olá! Sou o assistente virtual do Jardel Messias. Estou aqui para te guiar pelos projetos e conquistas dele como Desenvolvedor Full Stack. O que você gostaria de explorar hoje?",
   
-  experience: "Comecei na programação em 1 de junho de 2025 na empresa DevClub. Sou formado em Licenciatura em Informática pela UNIT desde 2019. Atualmente estou focado em aprender HTML, CSS e JavaScript, com planos de estudar React e Node.js em breve.",
+  experience: "O Jardel iniciou sua jornada prática na programação em junho de 2025, integrando a comunidade DevClub. Ele possui uma base sólida acadêmica, sendo formado em Licenciatura em Informática pela UNIT desde 2019. Atualmente, domina tecnologias como HTML5, CSS3, JavaScript e React, com foco em arquiteturas modernas.",
   
-  projects: "Já desenvolvi 4 projetos principais: o Jogo Embaralhado (quebra-cabeça interativo), Chuva de Palavras (jogo de digitação) , um Site de Turismo interativo (que permite explorar destinos turísticos pelo Brasil) e o Site de Comida Típica Brasileira (que apresenta pratos típicos de diferentes regiões com receitas de chefs renomados). Cada projeto foi pensado para gerar impacto positivo na vida das pessoas.",
+  projects: "O portfólio atual conta com 7 projetos estratégicos: \n1. Jogo Embaralhado (Lógica e UX)\n2. Chuva de Palavras (Game Loop)\n3. Acarajé do Diego (E-commerce Full Stack)\n4. Dashboard Financeiro PME (Análise de Dados)\n5. DevBurger (Sistema de Delivery)\n6. App do Tempo (Integração de APIs)\n7. Comidas Típicas Brasileiras (Site de Receitas)\nQual deles você gostaria de detalhar?",
   
-  motivation: "O que me fascina na programação é ver códigos se transformarem em algo visual e funcional. A capacidade de transformar uma ideia em realidade através do código é o que me motiva todos os dias. Quero fazer parte de equipes que desenvolvem projetos que melhoram a vida das pessoas.",
+  motivation: "O que move o Jardel é a capacidade de transformar linhas de código em soluções visuais e funcionais que resolvem problemas reais. Ele acredita que a tecnologia é a ferramenta mais poderosa para gerar impacto positivo e produtividade na vida das pessoas.",
   
-  goals: "Meu objetivo é me tornar um bom programador e profissional, sempre correndo atrás do conhecimento. Quero participar de equipes que fazem a diferença no mundo, desenvolvendo projetos que tragam produtividade e melhorem a vida das pessoas.",
+  goals: "O objetivo principal é consolidar-se como um desenvolvedor Full Stack de alta performance, integrando equipes inovadoras que buscam excelência técnica e impacto social através de software escalável.",
   
-  skills: "Atualmente estou estudando HTML, CSS e JavaScript. Meu próximo passo é aprender React e Node.js para me tornar um desenvolvedor full stack completo.",
+  skills: "Atualmente, o stack principal inclui JavaScript (ES6+), React.js e Tailwind CSS para o Frontend, além de Node.js e Python para o Backend. Ele também possui experiência com integração de APIs de Inteligência Artificial e bancos de dados como MongoDB.",
   
-  default: "Desculpe, não entendi sua pergunta. Você pode me perguntar sobre experiência, projetos, motivação, objetivos ou habilidades!"
+  default: "Interessante! Não tenho uma resposta específica para isso ainda, mas posso te falar sobre a formação do Jardel, os 7 projetos ativos, suas motivações ou suas habilidades técnicas. O que prefere?"
 };
 
 export const testimonials = [

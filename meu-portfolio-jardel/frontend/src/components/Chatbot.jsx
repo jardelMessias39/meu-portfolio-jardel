@@ -36,16 +36,11 @@ const Chatbot = ({ isOpen, onToggle }) => {
 
   const enviarMensagemParaAPI = async (mensagem, sessionIdAtual) => {
   try {
-    const response = await fetch(API_URL,  {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        message: mensagem,
-        session_id: sessionIdAtual 
-      })
-    });
+   const response = await fetch("https://meu-back.onrender.com/api/tts", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ text: texto_da_ia }),
+});
 
     if (!response.ok) {
       throw new Error(`Erro HTTP! status: ${response.status}`);
