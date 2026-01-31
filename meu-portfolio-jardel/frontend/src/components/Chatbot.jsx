@@ -156,41 +156,55 @@ try {
     }, 40);
   };
 
-  const falarTexto = async (texto) => {
-    if (!texto) return;
-    
-    // Mostra que está "carregando" a voz
-    setIsTyping(true); 
+ const falarTexto = async (texto) => {
+  if (!texto) return;
+  
+  setIsTyping(true); 
 
-    try {
-     const response = await fetch("https://meu-portfolio-backend-wgmj.onrender.com/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: texto }), 
-      });
+  try {
+    const response = await fetch("https://meu-portfolio-backend-wgmj.onrender.com/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: texto }), 
+    });
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-
-      audio.onplay = () => {
-        setIsTyping(false); // Remove o "digitando..."
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
-        dispararDigitação(texto); // Começa a escrever
-      };
-
-      audio.onended = () => {
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-        URL.revokeObjectURL(url);
-      };
-
-      await audio.play();
-
-    } catch (error) {
-      console.error("Erro no sistema de voz:", error);
-      setIsTyping(false);
+    // Se o servidor deu erro (500), a gente para aqui
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Erro vindo do servidor:", errorData);
+      throw new Error("Falha ao buscar áudio");
     }
-  };
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+
+    audio.onplay = () => {
+      setIsTyping(false);
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
+      dispararDigitação(texto);
+    };
+
+    audio.onended = () => {
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+      URL.revokeObjectURL(url);
+    };
+
+    // --- ESSA LINHA ABAIXO É A CHAVE PARA PARAR O VÍDEO NO ERRO ---
+    audio.onerror = () => {
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+      setIsTyping(false);
+    };
+
+    await audio.play();
+
+  } catch (error) {
+    console.error("Erro no sistema de voz:", error);
+    setIsTyping(false);
+    // Se der erro no fetch, avisamos o vídeo para parar
+    window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+  }
+};
 
   return (
     <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border flex flex-col z-50 font-sans">
