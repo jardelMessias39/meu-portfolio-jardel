@@ -1,7 +1,7 @@
+// App.jsx - ATUALIZADO
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import "./App.css";
-//import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -10,6 +10,7 @@ import Skills from "./components/Skills";
 import Chatbot from "./components/Chatbot";
 import Footer from "./components/Footer";
 import { Toaster } from "./components/ui/toaster";
+// AvatarFalante será usado DENTRO do Hero, não aqui
 
 const Home = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -19,28 +20,30 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    // Adicionamos 'layout-stack' aqui para controlar o scroll
+    <div className="min-h-screen layout-stack">
       <Header onChatOpen={handleChatToggle} />
       
       <main>
-        <div id="home">
+        {/* Cada div id agora é uma 'janela' que "trava" no topo */}
+        <div id="home" className="secao-janela">
           <Hero onChatOpen={handleChatToggle} />
         </div>
         
-        <div id="about">
+        <div id="about" className="secao-janela">
           <About />
         </div>
         
-        <div id="projects">
+        <div id="projects" className="secao-janela">
           <Projects />
         </div>
         
-        <div id="skills">
+        <div id="skills" className="secao-janela">
           <Skills />
         </div>
       </main>
 
-      <div id="contact">
+      <div id="contact" className="secao-janela">
         <Footer />
       </div>
 
@@ -50,11 +53,9 @@ const Home = () => {
   );
 };
 
-
 function App() {
   return (
     <div className="App">
-      {/* Aqui o BrowserRouter, Routes e Route são reconhecidos */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -62,7 +63,6 @@ function App() {
       </BrowserRouter>
     </div>
   );
-
 }
 
 export default App;

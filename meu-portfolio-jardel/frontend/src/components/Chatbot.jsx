@@ -1,256 +1,249 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, Bot, User } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { MessageCircle, Send, X, Bot, User, Mic, MicOff } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '../hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
+// O link que você acabou de criar no Render!
+const BACKEND_URL = 'https://meu-portfolio-backend-wgmj.onrender.com';
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/chat`;
-
-
-
-
-
-
+// E para o endpoint da API:
+const API = `${BACKEND_URL}/api`;
 const Chatbot = ({ isOpen, onToggle }) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'bot',
-      content: "Olá! Sou o assistente virtual do portfólio. Posso te contar sobre a experiência, projetos e objetivos como desenvolvedor. O que gostaria de saber?",
+      content: "Olá! Sou o assistente virtual. Como posso te ajudar hoje?",
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [sessionId, setSessionId] = useState(null);
-  const messagesEndRef = useRef(null);
-  const { toast } = useToast();
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const { toast } = useToast();
+  
+
+  // 1. Inicializa o Reconhecimento de Voz UMA VEZ
+  useEffect(() => {
+    const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Reconhecimento) return;
+
+    const recognition = new Reconhecimento();
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.lang = 'pt-BR';
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.onresult = (event) => {
+      // Se a IA estiver falando ou processando, ignoramos o áudio
+      if (window.speechSynthesis.speaking || isTyping) return;
+
+      const transcricao = event.results[event.results.length - 1][0].transcript;
+      if (transcricao.trim()) {
+        handleSendMessage(transcricao);
+      }
+    };
+
+    recognitionRef.current = recognition;
+  }, [isTyping]); // Só reinicia se o estado de digitação mudar drasticamente
+
+  // 2. Liga/Desliga o microfone automaticamente ao abrir/fechar o chat
+  useEffect(() => {
+    if (isOpen && recognitionRef.current && !isListening) {
+      try {
+        recognitionRef.current.start();
+      } catch (e) {
+        console.log("Microfone já estava ativo");
+      }
+    }
+    return () => {
+      if (recognitionRef.current) recognitionRef.current.stop();
+    };
+  }, [isOpen]);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  const enviarMensagemParaAPI = async (mensagem, sessionIdAtual) => {
-  try {
-   const response = await fetch("https://meu-back.onrender.com/api/tts", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ text: texto_da_ia }),
-});
+  const handleSendMessage = useCallback(async (textoParaEnviar) => {
+    const mensagemFinal = textoParaEnviar || inputValue;
+    if (!mensagemFinal.trim() || isTyping) return;
 
-    if (!response.ok) {
-      throw new Error(`Erro HTTP! status: ${response.status}`);
-    }
-
-    const dados = await response.json();
-    return dados;
-
-  } catch (erro) {
-    console.error('Erro ao enviar mensagem para a API:', erro);
-    throw erro;
-  }
-};
-
-
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
-
+    setInputValue('');
     const mensagemUsuario = {
       id: Date.now(),
       type: 'user',
-      content: inputValue,
+      content: mensagemFinal,
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, mensagemUsuario]);
-    const mensagemAtual = inputValue;
-    setInputValue('');
     setIsTyping(true);
+try {
+     const resposta = await fetch(`${API}/chat`, {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        // 'ngrok-skip-browser-warning': 'true' // Tente COMENTAR esta linha após clicar em "Visit Site" no navegador
+    },
+    body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
+});
+      const data = await resposta.json();
+      
+      if (data.session_id) setSessionId(data.session_id);
+
+     /* const respostaBot = {
+        id: Date.now() + 1,
+        type: 'bot',
+        //content: data.response,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, respostaBot]);
+      */
+      falarTexto(data.response);
+
+    } catch (erro) {
+      toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
+    } finally {
+      setIsTyping(false);
+    }
+  }, [inputValue, sessionId, isTyping, toast]);
+
+  const handleMicToggle = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      recognitionRef.current?.start();
+    }
+  };
+
+  if (!isOpen) return (
+    <Button onClick={onToggle} className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 shadow-lg z-50">
+      <MessageCircle className="h-6 w-6" />
+    </Button>
+  );
+  const dispararDigitação = (textoCompleto) => {
+    let i = 0;
+    // Adiciona uma nova mensagem vazia do bot
+    const novaMensagemId = Date.now();
+    setMessages(prev => [...prev, { 
+      id: novaMensagemId, 
+      type: 'bot', 
+      content: '', 
+      timestamp: new Date() 
+    }]);
+
+    const timer = setInterval(() => {
+      setMessages(prev => {
+        return prev.map(msg => {
+          if (msg.id === novaMensagemId && i < textoCompleto.length) {
+            return { ...msg, content: textoCompleto.substring(0, i + 1) };
+          }
+          return msg;
+        });
+      });
+      
+      i++;
+      if (i >= textoCompleto.length) clearInterval(timer);
+    }, 40);
+  };
+
+  const falarTexto = async (texto) => {
+    if (!texto) return;
+    
+    // Mostra que está "carregando" a voz
+    setIsTyping(true); 
 
     try {
-      const resposta = await enviarMensagemParaAPI(mensagemAtual, sessionId);
-      
-      // Atualizar session_id se necessário
-      if (resposta.session_id && resposta.session_id !== sessionId) {
-        setSessionId(resposta.session_id);
-      }
-
-      const respostaBot = {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: resposta.response,
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, respostaBot]);
-      
-    } catch (erro) {
-      console.error('Erro:', erro);
-
-      const resposta = await enviarMensagemParaAPI(mensagemAtual, sessionId);
-console.log("Resposta da API:", resposta);
-
-      const respostaBot = {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: "Desculpe, ocorreu um problema técnico. Mas posso te contar que sou um desenvolvedor júnior apaixonado por transformar ideias em código! Tenho 3 projetos principais e estou sempre aprendendo. O que você gostaria de saber?",
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, respostaBot]);
-
-      
-      toast({
-        title: "Erro de conexão",
-        description: "Houve um problema ao conectar com o servidor. Tente novamente em alguns segundos.",
-        variant: "destructive"
+     const response = await fetch("https://meu-portfolio-backend-wgmj.onrender.com/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: texto }), 
       });
-    } finally {
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+
+      audio.onplay = () => {
+        setIsTyping(false); // Remove o "digitando..."
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
+        dispararDigitação(texto); // Começa a escrever
+      };
+
+      audio.onended = () => {
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+        URL.revokeObjectURL(url);
+      };
+
+      await audio.play();
+
+    } catch (error) {
+      console.error("Erro no sistema de voz:", error);
       setIsTyping(false);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const suggestionButtons = [
-    "Conte sobre sua experiência",
-    "Quais são seus projetos?", 
-    "O que te motivou?",
-    "Quais seus objetivos?"
-  ];
-
-  const handleSuggestionClick = (suggestion) => {
-    setInputValue(suggestion);
-  };
-
-  if (!isOpen) {
-    return (
-      <Button
-        onClick={onToggle}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg z-50"
-        size="icon"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </Button>
-    );
-  }
-
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50">
+    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border flex flex-col z-50 font-sans">
       {/* Header */}
       <div className="bg-blue-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isListening ? 'bg-green-400 animate-pulse' : 'bg-blue-500'}`}>
             <Bot className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-semibold">Assistente Virtual</h3>
-            <p className="text-xs text-blue-100">
-              {sessionId ? `Sessão ativa` : 'Pergunte sobre minha experiência'}
+            <h3 className="font-semibold text-sm">Assistente de Voz</h3>
+            <p className="text-[10px] text-blue-100">
+              {isListening ? '🎤 Ouvindo você...' : 'Microfone Pausado'}
             </p>
           </div>
         </div>
-        <Button
-          onClick={onToggle}
-          variant="ghost"
-          size="icon"
-          className="text-white hover:bg-blue-500 h-8 w-8"
-        >
+        <Button onClick={onToggle} variant="ghost" size="icon" className="text-white h-8 w-8">
           <X className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div className={`flex items-start gap-2 max-w-[80%] ${message.type === 'user' ? 'flex-row-reverse' : ''}`}>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                message.type === 'user' ? 'bg-blue-600' : 'bg-gray-200'
-              }`}>
-                {message.type === 'user' ? (
-                  <User className="h-3 w-3 text-white" />
-                ) : (
-                  <Bot className="h-3 w-3 text-gray-600" />
-                )}
-              </div>
-              <div className={`rounded-2xl p-3 ${
-                message.type === 'user' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-100 text-gray-900'
-              }`}>
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-              </div>
+          <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`rounded-2xl p-3 max-w-[85%] text-sm ${message.type === 'user' ? 'bg-blue-600 text-white' : 'bg-white border shadow-sm text-gray-800'}`}>
+              <ReactMarkdown>{message.content}</ReactMarkdown>
             </div>
           </div>
         ))}
-
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="flex items-start gap-2">
-              <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                <Bot className="h-3 w-3 text-gray-600" />
-              </div>
-              <div className="bg-gray-100 rounded-2xl p-3">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {isTyping && <div className="text-xs text-gray-400 animate-pulse">Bot escrevendo...</div>}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggestions */}
-      {messages.length === 1 && (
-        <div className="px-4 pb-2">
-          <div className="flex flex-wrap gap-2">
-            {suggestionButtons.map((suggestion, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors"
-                disabled={isTyping}
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Input */}
-      <div className="p-4 border-t border-gray-200">
+      {/* Input Area */}
+      <div className="p-4 bg-white border-t">
         <div className="flex gap-2">
           <Input
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Digite sua pergunta..."
-            className="flex-1 rounded-full border-gray-300 focus:border-blue-500"
-            disabled={isTyping}
+            onChange={e => setInputValue(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            placeholder="Fale ou digite..."
+            className="rounded-full bg-gray-100 border-none"
           />
           <Button
-            onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isTyping}
+            onClick={handleMicToggle}
+            variant="outline"
             size="icon"
-            className="rounded-full bg-blue-600 hover:bg-blue-700"
+            className={`rounded-full transition-all ${isListening ? 'bg-red-50 border-red-200 text-red-600' : 'bg-gray-100'}`}
           >
+            {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+          </Button>
+          <Button onClick={() => handleSendMessage()} size="icon" className="rounded-full bg-blue-600">
             <Send className="h-4 w-4" />
           </Button>
         </div>

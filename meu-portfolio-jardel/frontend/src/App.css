@@ -1,34 +1,34 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Removendo o excesso de espaço entre as páginas */
+.secao-janela {
+    position: relative !important;
+    height: auto !important;
+    /* Reduzi o padding de 80px para 50px para aproximar as seções */
+    padding: 10px 20px; 
+    /* Preto suave (Anthracite/Zinc) em vez de preto puro */
+    background-color: #0f0f0f; 
+    display: block !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Ajuste na Navegação (Navbar/Header) */
+header, .navbar {
+  background-color: rgba(59, 59, 61, 0.7); /* transparente */
+  border-bottom: 1px solid #27272a;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px); /* Safari */
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Corrigindo o fundo geral do site */
+body, .App, .min-h-screen {
+    background-color: #a1a1aa !important;
+    color: #5d5d77;
 }
 
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* O Grid de Projetos sem espaços gigantes */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 20px;
 }

@@ -113,9 +113,9 @@ const Footer = () => {
               © {currentYear} Desenvolvedor Full Stack. Todos os direitos reservados.
             </p>
             <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <span>Feito com</span>
+              <span>Cristo</span>
               <Heart className="h-4 w-4 text-red-500" />
-              <span>e muito</span>
+              <span>Rei</span>
               <Code className="h-4 w-4 text-blue-500" />
             </div>
           </div>

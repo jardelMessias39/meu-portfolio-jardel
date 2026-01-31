@@ -97,73 +97,61 @@ const Projects = () => {
                   </ul>
                 </div>
 
-                                {/* Action Buttons */}
+                {/* Action Buttons */}
                 <div className="flex gap-3">
-                    {/* Botão DEMO (Tag <a> envolve o <Button>) */}
-                    <a 
-                        href={project.demo} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1" // Garante o alinhamento correto com o CSS Flex
+                  {/* Botão Demo */}
+                  <a href={project.demo} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-blue-600 hover:bg-blue-700"
                     >
-                        <Button 
-                            size="sm" 
-                            className="w-full bg-blue-600 hover:bg-blue-700"
-                        >
-                            <ExternalLink className="h-4 w-4 mr-2" />
-                            Demo
-                        </Button>
-                    </a>
-                    
-                    {/* Botão CÓDIGO (GitHub - Tag <a> já estava correta) */}
-                    <a
-                        href={project.github} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1"
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Demo
+                    </Button>
+                  </a>
+
+                  {/* Botão GitHub */}
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full"
                     >
-                        <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="w-full"
-                        >
-                            <Github className="h-4 w-4 mr-2" />
-                            Código
-                        </Button>
-                    </a>
+                      <Github className="h-4 w-4 mr-2" />
+                      Código
+                    </Button>
+                  </a>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Call to Action */}
-<div className="mt-16 text-center">
-  <div className="bg-white rounded-2xl p-8 shadow-lg border">
-    <h3 className="text-2xl font-bold text-gray-900 mb-4">
-      Quer ver mais projetos em desenvolvimento?
-    </h3>
-    <p className="text-gray-600 mb-6">
-      Estou sempre trabalhando em novos projetos e aprendendo novas tecnologias. 
-      Acompanhe meu progresso no GitHub!
-    </p>
-
-    {/* Centralizar botão */}
-    <div className="flex justify-center">
-      <a
-        href="https://github.com/jardelMessias39" 
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Button size="lg" className="bg-gray-700 hover:bg-gray-800 flex items-center px-6 py-3">
-          <Github className="h-5 w-5 mr-2" />
-          Ver GitHub
-        </Button>
-      </a>
-    </div>
-  </div>
-</div>
-
+       {/* Call to Action */}
+        <div className="mt-16 text-center">
+          <div className="bg-white rounded-2xl p-8 shadow-lg border">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Quer ver mais projetos em desenvolvimento?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Estou sempre trabalhando em novos projetos e aprendendo novas tecnologias. 
+              Acompanhe meu progresso no GitHub!
+            </p>
+            
+            {/* Envolvendo o botão com o link <a> para garantir o direcionamento */}
+            <a 
+              href="https://github.com/jardelMessias39" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block" // Garante que o link tenha o tamanho do botão
+            >
+              <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
+                <Github className="h-5 w-5 mr-2" />
+                Ver GitHub
+              </Button>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

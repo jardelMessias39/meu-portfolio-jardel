@@ -28,7 +28,7 @@ const Skills = () => {
       description: "Ferramentas que utilizo no desenvolvimento"
     }
   ];
-// ... o restante do seu componente continua igual
+
   const getColorClasses = (color) => {
     const colors = {
       blue: {
@@ -115,14 +115,13 @@ const Skills = () => {
             
             <div className="grid sm:grid-cols-3 gap-6 mt-8">
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">4+</div>
+                <div className="text-3xl font-bold mb-2">9+</div>
                 <div className="text-blue-100">Meses de Experiência</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold mb-2">📦 Projetos: 5</div>
-                <div className="text-blue-100">✅ Concluídos: 4 | 🧪 Protótipo: 1</div>
+                <div className="text-3xl font-bold mb-2">7</div>
+                <div className="text-blue-100">Projetos Concluídos</div>
               </div>
-
               <div className="text-center">
                 <div className="text-3xl font-bold mb-2">∞</div>
                 <div className="text-blue-100">Vontade de Aprender</div>
