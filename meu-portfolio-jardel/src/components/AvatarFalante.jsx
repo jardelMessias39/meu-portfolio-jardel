@@ -53,9 +53,9 @@ const AvatarFalante = ({
               estaFalando ? 'opacity-100' : 'opacity-0'
             }`}
             style={{ 
-transform: 'scale(1.2) translateX(70px)',
-              // O primeiro valor (65%) empurra para a direita, o segundo (10%) empurra para baixo
-              objectPosition: ' 40% 0%' 
+            transform: 'scale(1.2) translateX(70px)',
+                          // O primeiro valor (65%) empurra para a direita, o segundo (10%) empurra para baixo
+                          objectPosition: ' 40% 0%' 
             }}  
           />
       </div>
