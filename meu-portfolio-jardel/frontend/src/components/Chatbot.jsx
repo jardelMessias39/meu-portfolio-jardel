@@ -18,14 +18,17 @@ const Chatbot = ({ isOpen, onToggle }) => {
       timestamp: new Date()
     }
   ]);
- const [inputValue, setInputValue] = useState('');
-const [isTyping, setIsTyping] = useState(false);
-const [isListening, setIsListening] = useState(false);
-const [sessionId, setSessionId] = useState(null);
-const messagesEndRef = useRef(null);
-const recognitionRef = useRef(null);
-const { toast } = useToast();
-const handleSendRef = useRef(handleSendMessage);
+ 
+  const [inputValue, setInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
+
+  // 2. REFS (Inicie o handleSendRef como null para não travar)
+  const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const { toast } = useToast();
+  const handleSendRef = useRef(null);
   
 
   // Atualize o Ref sempre que a função mudar (não causa re-render)
