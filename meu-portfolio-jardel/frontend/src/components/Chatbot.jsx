@@ -68,11 +68,7 @@ const Chatbot = ({ isOpen, onToggle }) => {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
-
-  const handleSendMessage = useCallback(async (textoParaEnviar) => {
+ const handleSendMessage = useCallback(async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
     if (!mensagemFinal.trim() || isTyping) return;
 
@@ -86,37 +82,42 @@ const Chatbot = ({ isOpen, onToggle }) => {
 
     setMessages(prev => [...prev, mensagemUsuario]);
     setIsTyping(true);
-try {
-     const resposta = await fetch(`${API}/chat`, {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        // 'ngrok-skip-browser-warning': 'true' // Tente COMENTAR esta linha após clicar em "Visit Site" no navegador
-    },
-    body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
-});
+
+    try {
+      const resposta = await fetch(`${API}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
+      });
+
       const data = await resposta.json();
-      
       if (data.session_id) setSessionId(data.session_id);
 
-     /* const respostaBot = {
-        id: Date.now() + 1,
-        type: 'bot',
-        //content: data.response,
-        timestamp: new Date()
-      };
+      try {
+        // Tenta a voz. 
+        // Se funcionar, o seu 'dispararDigitação' dentro do falarTexto cuida de mostrar o texto.
+        await falarTexto(data.response);
 
-      setMessages(prev => [...prev, respostaBot]);
-      */
-      falarTexto(data.response);
+      } catch (erroFala) {
+        // SE A VOZ FALHAR (Erro 401/500):
+        // Como o 'dispararDigitação' não vai ser chamado pelo áudio, 
+        // nós chamamos manualmente aqui para o texto não sumir!
+        const respostaBotFallback = {
+          id: Date.now() + 1,
+          type: 'bot',
+          content: data.response,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, respostaBotFallback]);
+      }
 
     } catch (erro) {
+      console.error("Erro na conexão:", erro);
       toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
     } finally {
-      setIsTyping(false);
+      setIsTyping(false); 
     }
-  }, [inputValue, sessionId, isTyping, toast]);
-
+  }, [inputValue, sessionId, isTyping, toast, API, falarTexto]);
   const handleMicToggle = () => {
     if (isListening) {
       recognitionRef.current?.stop();
@@ -198,11 +199,13 @@ try {
 
     await audio.play();
 
+  // ... dentro do catch da função falarTexto
   } catch (error) {
     console.error("Erro no sistema de voz:", error);
     setIsTyping(false);
-    // Se der erro no fetch, avisamos o vídeo para parar
     window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+    // ADICIONE ISSO AQUI:
+    throw error; 
   }
 };
 
