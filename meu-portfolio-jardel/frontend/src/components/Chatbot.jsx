@@ -25,9 +25,14 @@ const [sessionId, setSessionId] = useState(null);
 const messagesEndRef = useRef(null);
 const recognitionRef = useRef(null);
 const { toast } = useToast();
+const handleSendRef = useRef(handleSendMessage);
   
 
-  // 1. Inicializa o Reconhecimento de Voz UMA VEZ
+  // Atualize o Ref sempre que a função mudar (não causa re-render)
+  useEffect(() => {
+    handleSendRef.current = handleSendMessage;
+  }, [handleSendMessage]);
+
   useEffect(() => {
     const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Reconhecimento) return;
@@ -40,21 +45,26 @@ const { toast } = useToast();
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     
-   recognition.onresult = (event) => {
-      // 1. Se o Antônio estiver falando ou processando, ignoramos
+    recognition.onresult = (event) => {
+      // Verifica se a IA está digitando/falando
       if (isTyping) return;
 
       const transcricao = event.results[event.results.length - 1][0].transcript;
       
       if (transcricao.trim()) {
         console.log("Usuário falou:", transcricao);
-        // 2. Chamamos a função de envio passando o texto reconhecido
-        handleSendMessage(transcricao); 
+        // Chamamos via .current para não depender da função no array de dependências
+        handleSendRef.current(transcricao); 
       }
     };
-    recognitionRef.current = recognition;
-  }, [isTyping, handleSendMessage]); // Só reinicia se o estado de digitação mudar drasticamente
 
+    recognitionRef.current = recognition;
+
+    // Cleanup para desligar o mic se o componente desmontar
+    return () => {
+      if (recognitionRef.current) recognitionRef.current.stop();
+    };
+  }, [isTyping]); // AGORA SIM: Só isTyping aqui!
   // 2. Liga/Desliga o microfone automaticamente ao abrir/fechar o chat
   useEffect(() => {
     if (isOpen && recognitionRef.current && !isListening) {
