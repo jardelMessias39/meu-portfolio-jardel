@@ -53,7 +53,7 @@ const { toast } = useToast();
       }
     };
     recognitionRef.current = recognition;
-  }, [isTyping]); // Só reinicia se o estado de digitação mudar drasticamente
+  }, [isTyping, handleSendMessage]); // Só reinicia se o estado de digitação mudar drasticamente
 
   // 2. Liga/Desliga o microfone automaticamente ao abrir/fechar o chat
   useEffect(() => {
@@ -68,6 +68,18 @@ const { toast } = useToast();
       if (recognitionRef.current) recognitionRef.current.stop();
     };
   }, [isOpen]);
+
+  // Adicione isso logo abaixo dos seus useRefs
+useEffect(() => {
+  const handleGlobalError = (event) => {
+    if (event.reason?.message?.includes("ElevenLabs") || event.message?.includes("voice")) {
+      event.preventDefault(); // Impede o erro de "pular" na tela
+      console.warn("Voz bloqueada, mas o chat segue firme!");
+    }
+  };
+  window.addEventListener("unhandledrejection", handleGlobalError);
+  return () => window.removeEventListener("unhandledrejection", handleGlobalError);
+}, []);
 
  const handleSendMessage = async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
