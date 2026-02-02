@@ -1,15 +1,15 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { MessageCircle, Send, X, Bot, User, Mic, MicOff } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { MessageCircle, Send, X, Bot, Mic, MicOff } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '../hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
-// O link que você acabou de criar no Render!
-const BACKEND_URL = 'https://meu-portfolio-backend-wgmj.onrender.com';
 
-// E para o endpoint da API:
+const BACKEND_URL = 'https://meu-portfolio-backend-wgmj.onrender.com';
 const API = `${BACKEND_URL}/api`;
+
 const Chatbot = ({ isOpen, onToggle }) => {
+  // --- 1. ESTADOS ---
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -18,24 +18,139 @@ const Chatbot = ({ isOpen, onToggle }) => {
       timestamp: new Date()
     }
   ]);
- 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [sessionId, setSessionId] = useState(null);
 
-  // 2. REFS (Inicie o handleSendRef como null para não travar)
+  // --- 2. REFS ---
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
-  const { toast } = useToast();
   const handleSendRef = useRef(null);
-  
+  const { toast } = useToast();
 
-  // Atualize o Ref sempre que a função mudar (não causa re-render)
+  // --- 3. FUNÇÕES (Definidas antes dos Effects para evitar o erro "v") ---
+
+  const dispararDigitação = (textoCompleto) => {
+    let i = 0;
+    const novaMensagemId = Date.now();
+    setMessages(prev => [...prev, { 
+      id: novaMensagemId, 
+      type: 'bot', 
+      content: '', 
+      timestamp: new Date() 
+    }]);
+
+    const timer = setInterval(() => {
+      setMessages(prev => prev.map(msg => {
+        if (msg.id === novaMensagemId && i < textoCompleto.length) {
+          return { ...msg, content: textoCompleto.substring(0, i + 1) };
+        }
+        return msg;
+      }));
+      
+      i++;
+      if (i >= textoCompleto.length) clearInterval(timer);
+    }, 40);
+  };
+
+  const falarTexto = async (texto) => {
+    if (!texto) return;
+    setIsTyping(true);
+    try {
+      const response = await fetch(`${API}/tts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: texto }),
+      });
+
+      if (!response.ok) throw new Error("Falha no áudio");
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+
+      audio.onplay = () => {
+        setIsTyping(false);
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
+        dispararDigitação(texto);
+      };
+
+      audio.onended = () => {
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+        URL.revokeObjectURL(url);
+      };
+
+      await audio.play();
+    } catch (error) {
+      console.error("Erro na voz:", error);
+      setIsTyping(false);
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+      // Se falhar a voz, mostramos o texto diretamente
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        type: 'bot',
+        content: texto,
+        timestamp: new Date()
+      }]);
+    }
+  };
+
+  const handleSendMessage = async (textoParaEnviar) => {
+    const mensagemFinal = textoParaEnviar || inputValue;
+    if (!mensagemFinal.trim() || isTyping) return;
+
+    setInputValue('');
+    const mensagemUsuario = {
+      id: Date.now(),
+      type: 'user',
+      content: mensagemFinal,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, mensagemUsuario]);
+    setIsTyping(true);
+
+    try {
+      const resposta = await fetch(`${API}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
+      });
+
+      const data = await resposta.json();
+      if (data.session_id) setSessionId(data.session_id);
+      
+      // Tenta falar, se falhar o catch dentro de falarTexto resolve
+      await falarTexto(data.response);
+
+    } catch (erro) {
+      toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleMicToggle = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      try {
+        recognitionRef.current?.start();
+      } catch (e) {
+        console.error("Erro ao iniciar microfone", e);
+      }
+    }
+  };
+
+  // --- 4. USE EFFECTS (Sempre por último) ---
+
+  // Sincroniza o Ref com a função atual
   useEffect(() => {
     handleSendRef.current = handleSendMessage;
   }, [handleSendMessage]);
 
+  // Inicializa reconhecimento de voz
   useEffect(() => {
     const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Reconhecimento) return;
@@ -49,170 +164,42 @@ const Chatbot = ({ isOpen, onToggle }) => {
     recognition.onend = () => setIsListening(false);
     
     recognition.onresult = (event) => {
-      // Verifica se a IA está digitando/falando
       if (isTyping) return;
-
       const transcricao = event.results[event.results.length - 1][0].transcript;
-      
       if (transcricao.trim()) {
-        console.log("Usuário falou:", transcricao);
-        // Chamamos via .current para não depender da função no array de dependências
-        handleSendRef.current(transcricao); 
+        handleSendRef.current?.(transcricao); 
       }
     };
 
     recognitionRef.current = recognition;
+    return () => recognition.stop();
+  }, [isTyping]);
 
-    // Cleanup para desligar o mic se o componente desmontar
-    return () => {
-      if (recognitionRef.current) recognitionRef.current.stop();
-    };
-  }, [isTyping]); // AGORA SIM: Só isTyping aqui!
-  // 2. Liga/Desliga o microfone automaticamente ao abrir/fechar o chat
+  // Scroll automático para a última mensagem
   useEffect(() => {
-    if (isOpen && recognitionRef.current && !isListening) {
-      try {
-        recognitionRef.current.start();
-      } catch (e) {
-        console.log("Microfone já estava ativo");
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Captura erros globais de áudio/promessas (ElevenLabs)
+  useEffect(() => {
+    const handleGlobalError = (event) => {
+      if (event.reason?.message?.includes("ElevenLabs") || event.message?.includes("voice")) {
+        event.preventDefault();
+        console.warn("Áudio indisponível - Antônio respondendo por texto.");
       }
-    }
-    return () => {
-      if (recognitionRef.current) recognitionRef.current.stop();
     };
-  }, [isOpen]);
-
-  // Adicione isso logo abaixo dos seus useRefs
-useEffect(() => {
-  const handleGlobalError = (event) => {
-    if (event.reason?.message?.includes("ElevenLabs") || event.message?.includes("voice")) {
-      event.preventDefault(); // Impede o erro de "pular" na tela
-      console.warn("Voz bloqueada, mas o chat segue firme!");
-    }
-  };
-  window.addEventListener("unhandledrejection", handleGlobalError);
-  return () => window.removeEventListener("unhandledrejection", handleGlobalError);
-}, []);
-
- const handleSendMessage = async (textoParaEnviar) => {
-    const mensagemFinal = textoParaEnviar || inputValue;
-    if (!mensagemFinal.trim() || isTyping) return;
-
-    setInputValue('');
-    const mensagemUsuario = {
-        id: Date.now(),
-        type: 'user',
-        content: mensagemFinal,
-        timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, mensagemUsuario]);
-    setIsTyping(true);
-
-    try {
-        const resposta = await fetch(`${API}/chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
-        });
-
-        const data = await resposta.json();
-        if (data.session_id) setSessionId(data.session_id);
-
-        try {
-            await falarTexto(data.response);
-        } catch (falaErro) {
-            // Se a ElevenLabs falhar, mostramos o texto aqui
-            setMessages(prev => [...prev, {
-                id: Date.now() + 1,
-                type: 'bot',
-                content: data.response,
-                timestamp: new Date()
-            }]);
-        }
-    } catch (erro) {
-        toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
-    } finally {
-        setIsTyping(false);
-    }
-};
-  const handleMicToggle = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-    } else {
-      recognitionRef.current?.start();
-    }
-  };
+    window.addEventListener("unhandledrejection", handleGlobalError);
+    return () => window.removeEventListener("unhandledrejection", handleGlobalError);
+  }, []);
 
   if (!isOpen) return (
-    <Button onClick={onToggle} className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 shadow-lg z-50">
+    <Button onClick={onToggle} className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 shadow-lg z-50 hover:bg-blue-700 transition-all">
       <MessageCircle className="h-6 w-6" />
     </Button>
   );
-  const dispararDigitação = (textoCompleto) => {
-    let i = 0;
-    // Adiciona uma nova mensagem vazia do bot
-    const novaMensagemId = Date.now();
-    setMessages(prev => [...prev, { 
-      id: novaMensagemId, 
-      type: 'bot', 
-      content: '', 
-      timestamp: new Date() 
-    }]);
-
-    const timer = setInterval(() => {
-      setMessages(prev => {
-        return prev.map(msg => {
-          if (msg.id === novaMensagemId && i < textoCompleto.length) {
-            return { ...msg, content: textoCompleto.substring(0, i + 1) };
-          }
-          return msg;
-        });
-      });
-      
-      i++;
-      if (i >= textoCompleto.length) clearInterval(timer);
-    }, 40);
-  };
-
- const falarTexto = async (texto) => {
-    if (!texto) return;
-    setIsTyping(true);
-    try {
-        const response = await fetch(`${API}/tts`, { // Use sua variável API
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: texto }),
-        });
-
-        if (!response.ok) throw new Error("Falha no áudio");
-
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-
-        audio.onplay = () => {
-            setIsTyping(false);
-            window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
-            if (typeof dispararDigitação === 'function') dispararDigitação(texto);
-        };
-
-        audio.onended = () => {
-            window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-            URL.revokeObjectURL(url);
-        };
-
-        await audio.play();
-    } catch (error) {
-        console.error("Erro na voz:", error);
-        setIsTyping(false);
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-        throw error; // Importante para o catch da handleSendMessage funcionar!
-    }
-};
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border flex flex-col z-50 font-sans">
+    <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border flex flex-col z-50 font-sans animate-in slide-in-from-bottom-5">
       {/* Header */}
       <div className="bg-blue-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -220,13 +207,13 @@ useEffect(() => {
             <Bot className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">Assistente de Voz</h3>
+            <h3 className="font-semibold text-sm">Assistente Antônio</h3>
             <p className="text-[10px] text-blue-100">
-              {isListening ? '🎤 Ouvindo você...' : 'Microfone Pausado'}
+              {isListening ? '🎤 Ouvindo você...' : 'Chat Online'}
             </p>
           </div>
         </div>
-        <Button onClick={onToggle} variant="ghost" size="icon" className="text-white h-8 w-8">
+        <Button onClick={onToggle} variant="ghost" size="icon" className="text-white h-8 w-8 hover:bg-blue-500">
           <X className="h-4 w-4" />
         </Button>
       </div>
@@ -235,24 +222,24 @@ useEffect(() => {
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`rounded-2xl p-3 max-w-[85%] text-sm ${message.type === 'user' ? 'bg-blue-600 text-white' : 'bg-white border shadow-sm text-gray-800'}`}>
+            <div className={`rounded-2xl p-3 max-w-[85%] text-sm shadow-sm ${message.type === 'user' ? 'bg-blue-600 text-white' : 'bg-white border text-gray-800'}`}>
               <ReactMarkdown>{message.content}</ReactMarkdown>
             </div>
           </div>
         ))}
-        {isTyping && <div className="text-xs text-gray-400 animate-pulse">Bot escrevendo...</div>}
+        {isTyping && <div className="text-xs text-gray-400 animate-pulse ml-2">Antônio está processando...</div>}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t">
+      <div className="p-4 bg-white border-t rounded-b-2xl">
         <div className="flex gap-2">
           <Input
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Fale ou digite..."
-            className="rounded-full bg-gray-100 border-none"
+            placeholder="Digite sua mensagem..."
+            className="rounded-full bg-gray-100 border-none focus-visible:ring-1 focus-visible:ring-blue-400"
           />
           <Button
             onClick={handleMicToggle}
@@ -262,7 +249,7 @@ useEffect(() => {
           >
             {isListening ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
           </Button>
-          <Button onClick={() => handleSendMessage()} size="icon" className="rounded-full bg-blue-600">
+          <Button onClick={() => handleSendMessage()} size="icon" className="rounded-full bg-blue-600 hover:bg-blue-700">
             <Send className="h-4 w-4" />
           </Button>
         </div>
