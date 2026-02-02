@@ -40,16 +40,18 @@ const { toast } = useToast();
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     
-    recognition.onresult = (event) => {
-      // Se a IA estiver falando ou processando, ignoramos o áudio
-      if (window.speechSynthesis.speaking || isTyping) return;
+   recognition.onresult = (event) => {
+      // 1. Se o Antônio estiver falando ou processando, ignoramos
+      if (isTyping) return;
 
       const transcricao = event.results[event.results.length - 1][0].transcript;
+      
       if (transcricao.trim()) {
-        handleSendMessage(transcricao);
+        console.log("Usuário falou:", transcricao);
+        // 2. Chamamos a função de envio passando o texto reconhecido
+        handleSendMessage(transcricao); 
       }
     };
-
     recognitionRef.current = recognition;
   }, [isTyping]); // Só reinicia se o estado de digitação mudar drasticamente
 
