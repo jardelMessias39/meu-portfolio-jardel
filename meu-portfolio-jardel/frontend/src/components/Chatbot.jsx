@@ -18,14 +18,13 @@ const Chatbot = ({ isOpen, onToggle }) => {
       timestamp: new Date()
     }
   ]);
-  const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [sessionId, setSessionId] = useState(null);
-
-  const messagesEndRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const { toast } = useToast();
+ const [inputValue, setInputValue] = useState('');
+const [isTyping, setIsTyping] = useState(false);
+const [isListening, setIsListening] = useState(false);
+const [sessionId, setSessionId] = useState(null);
+const messagesEndRef = useRef(null);
+const recognitionRef = useRef(null);
+const { toast } = useToast();
   
 
   // 1. Inicializa o Reconhecimento de Voz UMA VEZ
@@ -68,56 +67,48 @@ const Chatbot = ({ isOpen, onToggle }) => {
     };
   }, [isOpen]);
 
- const handleSendMessage = useCallback(async (textoParaEnviar) => {
+ const handleSendMessage = async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
     if (!mensagemFinal.trim() || isTyping) return;
 
     setInputValue('');
     const mensagemUsuario = {
-      id: Date.now(),
-      type: 'user',
-      content: mensagemFinal,
-      timestamp: new Date()
+        id: Date.now(),
+        type: 'user',
+        content: mensagemFinal,
+        timestamp: new Date()
     };
 
     setMessages(prev => [...prev, mensagemUsuario]);
     setIsTyping(true);
 
     try {
-      const resposta = await fetch(`${API}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
-      });
+        const resposta = await fetch(`${API}/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
+        });
 
-      const data = await resposta.json();
-      if (data.session_id) setSessionId(data.session_id);
+        const data = await resposta.json();
+        if (data.session_id) setSessionId(data.session_id);
 
-      try {
-        // Tenta a voz. 
-        // Se funcionar, o seu 'dispararDigitação' dentro do falarTexto cuida de mostrar o texto.
-        await falarTexto(data.response);
-
-      } catch (erroFala) {
-        // SE A VOZ FALHAR (Erro 401/500):
-        // Como o 'dispararDigitação' não vai ser chamado pelo áudio, 
-        // nós chamamos manualmente aqui para o texto não sumir!
-        const respostaBotFallback = {
-          id: Date.now() + 1,
-          type: 'bot',
-          content: data.response,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, respostaBotFallback]);
-      }
-
+        try {
+            await falarTexto(data.response);
+        } catch (falaErro) {
+            // Se a ElevenLabs falhar, mostramos o texto aqui
+            setMessages(prev => [...prev, {
+                id: Date.now() + 1,
+                type: 'bot',
+                content: data.response,
+                timestamp: new Date()
+            }]);
+        }
     } catch (erro) {
-      console.error("Erro na conexão:", erro);
-      toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
+        toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
     } finally {
-      setIsTyping(false); 
+        setIsTyping(false);
     }
-  }, [inputValue, sessionId, isTyping, toast, API, falarTexto]);
+};
   const handleMicToggle = () => {
     if (isListening) {
       recognitionRef.current?.stop();
@@ -158,55 +149,39 @@ const Chatbot = ({ isOpen, onToggle }) => {
   };
 
  const falarTexto = async (texto) => {
-  if (!texto) return;
-  
-  setIsTyping(true); 
+    if (!texto) return;
+    setIsTyping(true);
+    try {
+        const response = await fetch(`${API}/tts`, { // Use sua variável API
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: texto }),
+        });
 
-  try {
-    const response = await fetch("https://meu-portfolio-backend-wgmj.onrender.com/api/tts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: texto }), 
-    });
+        if (!response.ok) throw new Error("Falha no áudio");
 
-    // Se o servidor deu erro (500), a gente para aqui
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Erro vindo do servidor:", errorData);
-      throw new Error("Falha ao buscar áudio");
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+
+        audio.onplay = () => {
+            setIsTyping(false);
+            window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
+            if (typeof dispararDigitação === 'function') dispararDigitação(texto);
+        };
+
+        audio.onended = () => {
+            window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+            URL.revokeObjectURL(url);
+        };
+
+        await audio.play();
+    } catch (error) {
+        console.error("Erro na voz:", error);
+        setIsTyping(false);
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+        throw error; // Importante para o catch da handleSendMessage funcionar!
     }
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-
-    audio.onplay = () => {
-      setIsTyping(false);
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
-      dispararDigitação(texto);
-    };
-
-    audio.onended = () => {
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-      URL.revokeObjectURL(url);
-    };
-
-    // --- ESSA LINHA ABAIXO É A CHAVE PARA PARAR O VÍDEO NO ERRO ---
-    audio.onerror = () => {
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-      setIsTyping(false);
-    };
-
-    await audio.play();
-
-  // ... dentro do catch da função falarTexto
-  } catch (error) {
-    console.error("Erro no sistema de voz:", error);
-    setIsTyping(false);
-    window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-    // ADICIONE ISSO AQUI:
-    throw error; 
-  }
 };
 
   return (
