@@ -4,11 +4,18 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '../hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle // Adicione ele aqui se não tiver
+} from './ui/dialog';
 
 const BACKEND_URL = 'https://meu-portfolio-backend-wgmj.onrender.com';
 const API = `${BACKEND_URL}/api`;
 
 const Chatbot = ({ isOpen, onToggle }) => {
+ 
   // --- 1. ESTADOS ---
   const [messages, setMessages] = useState([
     {
@@ -28,6 +35,7 @@ const Chatbot = ({ isOpen, onToggle }) => {
   const recognitionRef = useRef(null);
   const handleSendRef = useRef(null);
   const { toast } = useToast();
+  
 
   // --- 3. FUNÇÕES (Definidas antes dos Effects para evitar o erro "v") ---
 
@@ -204,6 +212,7 @@ const falarTexto = async (texto) => {
       <MessageCircle className="h-6 w-6" />
     </Button>
   );
+  
 
   return (
     <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-2xl shadow-2xl border flex flex-col z-50 font-sans animate-in slide-in-from-bottom-5">
