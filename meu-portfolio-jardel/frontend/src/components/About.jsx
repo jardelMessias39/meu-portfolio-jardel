@@ -56,7 +56,7 @@ const About = () => {
               <GraduationCap className="h-8 w-8 text-purple-600 mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">Formação</h4>
               <p className="text-gray-600">Licenciatura em Informática</p>
-              <p className="text-sm text-purple-600 mt-1">UNIT - Há 8 anos</p>
+              <p className="text-sm text-purple-600 mt-1">UNIT - Há 9 anos</p>
             </div>
 
             <div className="bg-green-50 p-6 rounded-xl border border-green-100">

@@ -31,34 +31,40 @@ const Chatbot = ({ isOpen, onToggle }) => {
 
   // --- 3. FUNÇÕES (Definidas antes dos Effects para evitar o erro "v") ---
 
-  const dispararDigitação = (textoCompleto) => {
-    let i = 0;
-    const novaMensagemId = Date.now();
-    setMessages(prev => [...prev, { 
-      id: novaMensagemId, 
-      type: 'bot', 
-      content: '', 
-      timestamp: new Date() 
-    }]);
+ const dispararDigitação = (textoCompleto) => {
+  let i = 0;
+  const novaMensagemId = Date.now();
+  setMessages(prev => [...prev, { id: novaMensagemId, type: 'bot', content: '', timestamp: new Date() }]);
 
-    const timer = setInterval(() => {
-      setMessages(prev => prev.map(msg => {
-        if (msg.id === novaMensagemId && i < textoCompleto.length) {
-          return { ...msg, content: textoCompleto.substring(0, i + 1) };
+  const timer = setInterval(() => {
+    setMessages(prev => prev.map(msg => {
+      if (msg.id === novaMensagemId && i < textoCompleto.length) {
+        return { ...msg, content: textoCompleto.substring(0, i + 1) };
+      }
+      return msg;
+    }));
+    
+    i++;
+    if (i >= textoCompleto.length) {
+      clearInterval(timer);
+      // AVISO: A digitação acabou! Se não houver áudio tocando, para o vídeo em 1.5s
+      setTimeout(() => {
+        // Só disparar o "parar" se não houver um áudio tocando (checa via variável global ou estado)
+        if (!window.audioTocando) {
+          window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
         }
-        return msg;
-      }));
-      
-      i++;
-      if (i >= textoCompleto.length) clearInterval(timer);
-    }, 40);
-  };
+      }, 1500); // 1.5 segundo de "respiro" após o texto sumir
+    }
+  }, 50); // Velocidade da digitação (50ms é um ritmo natural)
+};
 
-  const falarTexto = async (texto) => {
+// 2. Ajuste na função falarTexto
+const falarTexto = async (texto) => {
   if (!texto) return;
   setIsTyping(true);
+  window.audioTocando = false; // Reset da trava de áudio
 
-  // GATILHO: O vídeo começa a se mexer agora (com ou sem voz)
+  // Liga o vídeo
   window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
 
   try {
@@ -68,39 +74,35 @@ const Chatbot = ({ isOpen, onToggle }) => {
       body: JSON.stringify({ text: texto }),
     });
 
-    if (!response.ok) throw new Error("Voz indisponível");
+    if (!response.ok) throw new Error("Sem créditos");
 
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
+    
+    window.audioTocando = true; // Marca que o áudio assumiu o controle
 
     audio.onplay = () => {
       setIsTyping(false);
-      dispararDigitação(texto); // Texto começa a aparecer com a voz
+      dispararDigitação(texto);
     };
 
     audio.onended = () => {
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false })); // Para o vídeo
+      window.audioTocando = false;
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
       URL.revokeObjectURL(url);
     };
 
     await audio.play();
 
   } catch (error) {
-    console.warn("Modo Texto: Executando vídeo + digitação sem áudio.");
+    // MODO SEM VOZ (HÍBRIDO)
+    window.audioTocando = false;
     setIsTyping(false);
-    
-    // Se não tem voz, o texto dita a duração do vídeo
     dispararDigitação(texto); 
-    
-    // Calculamos o tempo da animação baseado no tamanho do texto (ex: 70ms por letra)
-    const tempoEstimado = texto.length * 70; 
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false })); // Para o vídeo após o texto terminar
-    }, tempoEstimado);
+    // O vídeo agora vai parar automaticamente pelo setTimeout que colocamos dentro da dispararDigitação!
   }
 };
-
   const handleSendMessage = async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
     if (!mensagemFinal.trim() || isTyping) return;
