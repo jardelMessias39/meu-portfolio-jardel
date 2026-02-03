@@ -234,7 +234,7 @@ const falarTexto = async (texto) => {
             </div>
           </div>
         ))}
-        {isTyping && <div className="text-xs text-gray-400 animate-pulse ml-2">Antônio está processando...</div>}
+        {isTyping && <div className="text-xs text-gray-400 animate-pulse ml-2">Jardel Messias está processando...</div>}
         <div ref={messagesEndRef} />
       </div>
 
