@@ -192,7 +192,7 @@ const falarTexto = async (texto) => {
     const handleGlobalError = (event) => {
       if (event.reason?.message?.includes("ElevenLabs") || event.message?.includes("voice")) {
         event.preventDefault();
-        console.warn("Áudio indisponível - Antônio respondendo por texto.");
+        console.warn("Áudio indisponível - Jardel Messias respondendo por texto.");
       }
     };
     window.addEventListener("unhandledrejection", handleGlobalError);
