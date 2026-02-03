@@ -55,46 +55,51 @@ const Chatbot = ({ isOpen, onToggle }) => {
   };
 
   const falarTexto = async (texto) => {
-    if (!texto) return;
-    setIsTyping(true);
-    try {
-      const response = await fetch(`${API}/tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: texto }),
-      });
+  if (!texto) return;
+  setIsTyping(true);
 
-      if (!response.ok) throw new Error("Falha no áudio");
+  // GATILHO: O vídeo começa a se mexer agora (com ou sem voz)
+  window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
+  try {
+    const response = await fetch(`${API}/tts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: texto }),
+    });
 
-      audio.onplay = () => {
-        setIsTyping(false);
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
-        dispararDigitação(texto);
-      };
+    if (!response.ok) throw new Error("Voz indisponível");
 
-      audio.onended = () => {
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-        URL.revokeObjectURL(url);
-      };
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
 
-      await audio.play();
-    } catch (error) {
-      console.error("Erro na voz:", error);
+    audio.onplay = () => {
       setIsTyping(false);
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-      // Se falhar a voz, mostramos o texto diretamente
-      setMessages(prev => [...prev, {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: texto,
-        timestamp: new Date()
-      }]);
-    }
-  };
+      dispararDigitação(texto); // Texto começa a aparecer com a voz
+    };
+
+    audio.onended = () => {
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false })); // Para o vídeo
+      URL.revokeObjectURL(url);
+    };
+
+    await audio.play();
+
+  } catch (error) {
+    console.warn("Modo Texto: Executando vídeo + digitação sem áudio.");
+    setIsTyping(false);
+    
+    // Se não tem voz, o texto dita a duração do vídeo
+    dispararDigitação(texto); 
+    
+    // Calculamos o tempo da animação baseado no tamanho do texto (ex: 70ms por letra)
+    const tempoEstimado = texto.length * 70; 
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false })); // Para o vídeo após o texto terminar
+    }, tempoEstimado);
+  }
+};
 
   const handleSendMessage = async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
