@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic } from 'lucide-react';
-import imgParado from '../public/avatar-parado.png';
 
 const AvatarFalante = ({
-
+imagemParado = "/avatar-parado.png",
   videoFalando = "/avatar-falando.mp4",
   tamanho = 300
 }) => {
@@ -36,7 +35,7 @@ const AvatarFalante = ({
       
       {/* Imagem Parada */}
       <img
-       src={imgParado}
+       src={imagemParado}
         alt="Avatar Parado"
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
           estaFalando ? 'opacity-0' : 'opacity-100'
