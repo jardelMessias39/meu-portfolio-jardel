@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic } from 'lucide-react';
+import imgParado from '../public/avatar-parado.png';
 
 const AvatarFalante = ({
-  imagemParado = "/avatar-parado.png",
+
   videoFalando = "/avatar-falando.mp4",
   tamanho = 300
 }) => {
@@ -35,7 +36,7 @@ const AvatarFalante = ({
       
       {/* Imagem Parada */}
       <img
-       src="/avatar-parado.png"
+       src={imgParado}
         alt="Avatar Parado"
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
           estaFalando ? 'opacity-0' : 'opacity-100'
@@ -44,12 +45,14 @@ const AvatarFalante = ({
           transform: 'scale(1.1)', 
           objectPosition: '50% 10%' // Centraliza seu rosto horizontalmente
         }}
+        onLoad={() => console.log("Imagem carregada com sucesso!")}
+          onError={(e) => console.error("A imagem AINDA não quer carregar:", e)}
       />
 
       {/* Vídeo Falando */}
       <video
         ref={videoRef}
-        src="/avatar-falando.mp4"
+        src={videoFalando}
         loop
         muted
         playsInline
