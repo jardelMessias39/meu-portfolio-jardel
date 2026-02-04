@@ -60,7 +60,7 @@ imagemParado = "/avatar-parado.png",
         }`}
         style={{ 
           transform: 'scale(1.1)', // Mesma escala da imagem para não dar "pulo"
-          objectPosition: '50% 10%' // Mesmo posicionamento da imagem
+          objectPosition: '40% 10%' // Mesmo posicionamento da imagem
         }}
       />
     </div>
