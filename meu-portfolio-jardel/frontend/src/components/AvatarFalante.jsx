@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Mic } from 'lucide-react';
 
 const AvatarFalante = ({
-  imagemParado = "/avatar-parado.png",
+  imagemParado = "/avatar-parado.pnp",
   videoFalando = "/avatar-falando.mp4",
   tamanho = 300
 }) => {
@@ -55,7 +55,7 @@ const AvatarFalante = ({
             style={{ 
               transform: 'scale(1.2) translateX(70px)',
               // O primeiro valor empurra para a direita, o segundo para baixo
-              objectPosition: '40% 0%' 
+              objectPosition: '30% 0%' 
             }}
           />
       </div>

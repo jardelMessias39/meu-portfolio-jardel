@@ -4,12 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from '../hooks/use-toast';
 import ReactMarkdown from 'react-markdown';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle // Adicione ele aqui se não tiver
-} from './ui/dialog';
+
 
 const BACKEND_URL = 'https://meu-portfolio-backend-wgmj.onrender.com';
 const API = `${BACKEND_URL}/api`;
