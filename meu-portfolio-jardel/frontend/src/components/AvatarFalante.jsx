@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Mic } from 'lucide-react';
 
 const AvatarFalante = ({
-imagemParado = "/avatar-parado2.jpeg",
+imagemParado = "/avatar-parado.png",
   videoFalando = "/avatar-falando.mp4",
   tamanho = 300
 }) => {

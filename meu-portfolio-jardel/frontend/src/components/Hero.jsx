@@ -70,7 +70,7 @@ const Hero = ({ onChatOpen }) => {
         <div className="relative flex flex-col items-center justify-center">
           
           <AvatarFalante 
-            imagemParado="/avatar-parado.jpeg"
+            imagemParado="/avatar-parado.png"
             videoFalando="/avatar-falando.mp4"
             tamanho={350} // Aumentei um pouco para dar destaque
           />
