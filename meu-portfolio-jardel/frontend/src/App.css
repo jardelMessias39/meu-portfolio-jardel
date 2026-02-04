@@ -32,3 +32,34 @@ body, .App, .min-h-screen {
     margin: 0 auto;
     padding-top: 20px;
 }
+/* Ajuste para garantir que o chat apareça inteiro no celular */
+@media (max-width: 600px) {
+  /* O container principal do chat */
+  .chat-container {
+    width: 92% !important; /* Largura quase total */
+    height: 70vh !important; /* Limita a altura para não sumir o input */
+    max-height: 500px;
+    bottom: 20px !important;
+    right: 4% !important;
+    left: 4% !important;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999; /* Garante que fique na frente de tudo */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  /* Ajuste para as mensagens não ficarem gigantes */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  /* Ajuste no balão de fala para não ocupar a tela toda */
+  .message-bubble {
+    max-width: 85% !important;
+  }
+}
