@@ -195,7 +195,7 @@ const falarTexto = async (texto) => {
     const handleGlobalError = (event) => {
       if (event.reason?.message?.includes("ElevenLabs") || event.message?.includes("voice")) {
         event.preventDefault();
-        console.warn("Áudio indisponível - Jardel Messias respondendo por texto.");
+        console.warn("Áudio indisponível -  respondendo por texto...");
       }
     };
     window.addEventListener("unhandledrejection", handleGlobalError);
@@ -218,7 +218,7 @@ const falarTexto = async (texto) => {
             <Bot className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">Assistente Antônio</h3>
+            <h3 className="font-semibold text-sm">Jardel Messias</h3>
             <p className="text-[10px] text-blue-100">
               {isListening ? '🎤 Ouvindo você...' : 'Chat Online'}
             </p>
