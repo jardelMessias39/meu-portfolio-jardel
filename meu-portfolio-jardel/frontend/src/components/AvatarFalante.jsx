@@ -35,7 +35,7 @@ const AvatarFalante = ({
       
       {/* Imagem Parada */}
       <img
-        src={imagemParado}
+       src="/avatar-parado.png"
         alt="Avatar Parado"
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
           estaFalando ? 'opacity-0' : 'opacity-100'
@@ -49,7 +49,7 @@ const AvatarFalante = ({
       {/* Vídeo Falando */}
       <video
         ref={videoRef}
-        src={videoFalando}
+        src="/avatar-falando.mp4"
         loop
         muted
         playsInline
