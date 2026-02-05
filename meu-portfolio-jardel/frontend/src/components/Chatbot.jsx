@@ -16,7 +16,7 @@ const Chatbot = ({ isOpen, onToggle }) => {
     {
       id: 1,
       type: 'bot',
-      content: "Olá! Sou o assistente virtual. Como posso te ajudar hoje?",
+      content: "Oi, tudo bem? Eu sou o Antônio. Fui criado pelo Jardel para ser o braço direito dele aqui no portfólio. Posso te contar sobre a experiência dele com Full Stack, mostrar os sistemas que ele já tirou do papel ou falar sobre as tecnologias que ele domina. O que você quer saber primeiro?",
       timestamp: new Date()
     }
   ]);
