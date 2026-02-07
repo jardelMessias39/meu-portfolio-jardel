@@ -105,8 +105,7 @@ const falarTexto = async (texto) => {
     dispararDigitação(texto); 
     // O vídeo agora vai parar automaticamente pelo setTimeout que colocamos dentro da dispararDigitação!
   }
-};
-  const handleSendMessage = async (textoParaEnviar) => {
+};const handleSendMessage = async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
     if (!mensagemFinal.trim() || isTyping) return;
 
@@ -119,7 +118,7 @@ const falarTexto = async (texto) => {
     };
 
     setMessages(prev => [...prev, mensagemUsuario]);
-    setIsTyping(true);
+    setIsTyping(true); // Antônio está "pensando"
 
     try {
       const resposta = await fetch(`${API}/chat`, {
@@ -130,17 +129,60 @@ const falarTexto = async (texto) => {
 
       const data = await resposta.json();
       if (data.session_id) setSessionId(data.session_id);
-      
-      // Tenta falar, se falhar o catch dentro de falarTexto resolve
-      await falarTexto(data.response);
+
+      // --- O PULO DO GATO ESTÁ AQUI ---
+      // Em vez de só chamar a função, vamos esperar o áudio carregar
+      await prepararEPlayAudio(data.response);
 
     } catch (erro) {
       toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
-    } finally {
-      setIsTyping(false);
+      setIsTyping(false); // Libera se der erro
     }
   };
 
+  // Crie ou ajuste essa função para gerenciar a promessa do áudio
+  const prepararEPlayAudio = (texto) => {
+    return new Promise(async (resolve) => {
+      try {
+        const ttsResponse = await fetch(`${API}/tts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: texto })
+        });
+
+        const blob = await ttsResponse.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+
+        audio.oncanplaythrough = () => {
+          // Quando o áudio estiver pronto, liberamos a interface
+          setIsTyping(false); 
+          setMessages(prev => [...prev, {
+            id: Date.now(),
+            type: 'bot',
+            content: texto,
+            timestamp: new Date()
+          }]);
+          
+          // Se você tiver um estado para o vídeo do Antônio falando:
+          // setIsVideoPlaying(true); 
+          audio.play();
+        };
+
+        audio.onended = () => {
+          // setIsVideoPlaying(false); 
+          resolve(); // Finaliza a promessa quando o áudio acaba
+        };
+
+      } catch (e) {
+        console.error("Erro no áudio:", e);
+        // Se o áudio falhar, mostra o texto de qualquer jeito para não travar
+        setIsTyping(false);
+        setMessages(prev => [...prev, { id: Date.now(), type: 'bot', content: texto }]);
+        resolve();
+      }
+    });
+  };
   const handleMicToggle = () => {
     if (isListening) {
       recognitionRef.current?.stop();
