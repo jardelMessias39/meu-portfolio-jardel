@@ -50,87 +50,75 @@ const Chatbot = ({ isOpen, onToggle }) => {
     i++;
     if (i >= textoCompleto.length) {
       clearInterval(timer);
-      // REMOVEMOS o setTimeout e o dispatch daqui! 
-      // Deixamos o controle apenas para o evento do áudio.
+      // NADA DE EVENTOS AQUI. O vídeo agora é escravo do ÁUDIO.
     }
-  }, 40); // Ajustei para 40ms para ser levemente mais rápido
+  }, 35); // Digitação levemente mais veloz para dar fluidez
 };
-
 // 2. Ajuste na função falarTexto
 
 const handleSendMessage = async (textoParaEnviar) => {
-    const mensagemFinal = textoParaEnviar || inputValue;
-    if (!mensagemFinal.trim() || isTyping) return;
+  const mensagemFinal = textoParaEnviar || inputValue;
+  if (!mensagemFinal.trim() || isTyping) return;
 
-    setInputValue('');
-    const mensagemUsuario = {
-      id: Date.now(),
-      type: 'user',
-      content: mensagemFinal,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, mensagemUsuario]);
-    setIsTyping(true);
-
-    try {
-      // 1. Busca a resposta de texto (Rápido)
-      const resposta = await fetch(`${API}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
-      });
-
-      const data = await resposta.json();
-      if (data.session_id) setSessionId(data.session_id);
-
-      // 2. PARALELISMO: Removemos o 'await' daqui para não travar a UI
-      setIsTyping(false); 
-      falarESincronizar(data.response); // Chamamos sem esperar terminar
-
-    } catch (erro) {
-      toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
-      setIsTyping(false);
-    }
-  };
-
-  const falarESincronizar = async (texto) => {
-  if (!texto) return;
-
-  dispararDigitação(texto);
+  setInputValue('');
+  setMessages(prev => [...prev, { id: Date.now(), type: 'user', content: mensagemFinal }]);
+  setIsTyping(true);
 
   try {
-    const response = await fetch(`${API}/tts`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: texto }),
+    // 1. Chamada do Chat (Único await necessário aqui)
+    const resposta = await fetch(`${API}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: mensagemFinal, session_id: sessionId })
     });
 
-    if (!response.ok) return;
+    const data = await resposta.json();
+    if (data.session_id) setSessionId(data.session_id);
 
-    const blob = await response.blob();
+    // 2. LIBERAÇÃO IMEDIATA: O "Pensando" some e a mágica começa
+    setIsTyping(false);
+    
+    // Executamos a sincronização SEM await para não travar o loop do React
+    executarIACompleta(data.response);
+
+  } catch (erro) {
+    toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
+    setIsTyping(false);
+  }
+};
+
+const executarIACompleta = (texto) => {
+  if (!texto) return;
+
+  // A. Inicia a digitação na hora
+  dispararDigitação(texto);
+
+  // B. Busca o áudio em paralelo (sem travar a digitação)
+  fetch(`${API}/tts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text: texto }),
+  })
+  .then(res => res.blob())
+  .then(blob => {
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
-    
+
+    // C. SINCRONIA MESTRE: O vídeo obedece APENAS ao áudio
     audio.onplay = () => {
-      // Liga o vídeo exatamente quando o som começa
       window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
     };
 
     audio.onended = () => {
-      // DESLIGA o vídeo exatamente quando o som termina
       window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
       URL.revokeObjectURL(url);
     };
 
-    await audio.play();
-
-  } catch (error) {
-    // Se o áudio falhar, o vídeo para logo após a digitação como segurança
-    setTimeout(() => {
-       window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-    }, 2000);
-  }
+    audio.play().catch(e => console.warn("Áudio bloqueado pelo navegador"));
+  })
+  .catch(err => {
+    console.error("Erro no TTS, mantendo apenas texto.");
+  });
 };
   const handleMicToggle = () => {
     if (isListening) {
