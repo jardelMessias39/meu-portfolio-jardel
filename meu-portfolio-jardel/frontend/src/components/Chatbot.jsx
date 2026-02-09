@@ -62,50 +62,8 @@ const Chatbot = ({ isOpen, onToggle }) => {
 };
 
 // 2. Ajuste na função falarTexto
-const falarTexto = async (texto) => {
-  if (!texto) return;
-  setIsTyping(true);
-  window.audioTocando = false; // Reset da trava de áudio
 
-  // Liga o vídeo
-  window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
-
-  try {
-    const response = await fetch(`${API}/tts`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: texto }),
-    });
-
-    if (!response.ok) throw new Error("Sem créditos");
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-    
-    window.audioTocando = true; // Marca que o áudio assumiu o controle
-
-    audio.onplay = () => {
-      setIsTyping(false);
-      dispararDigitação(texto);
-    };
-
-    audio.onended = () => {
-      window.audioTocando = false;
-      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-      URL.revokeObjectURL(url);
-    };
-
-    await audio.play();
-
-  } catch (error) {
-    // MODO SEM VOZ (HÍBRIDO)
-    window.audioTocando = false;
-    setIsTyping(false);
-    dispararDigitação(texto); 
-    // O vídeo agora vai parar automaticamente pelo setTimeout que colocamos dentro da dispararDigitação!
-  }
-};const handleSendMessage = async (textoParaEnviar) => {
+const handleSendMessage = async (textoParaEnviar) => {
     const mensagemFinal = textoParaEnviar || inputValue;
     if (!mensagemFinal.trim() || isTyping) return;
 
@@ -118,9 +76,10 @@ const falarTexto = async (texto) => {
     };
 
     setMessages(prev => [...prev, mensagemUsuario]);
-    setIsTyping(true); // Antônio está "pensando"
+    setIsTyping(true);
 
     try {
+      // 1. Busca a resposta de texto (Rápido)
       const resposta = await fetch(`${API}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -130,58 +89,52 @@ const falarTexto = async (texto) => {
       const data = await resposta.json();
       if (data.session_id) setSessionId(data.session_id);
 
-      // --- O PULO DO GATO ESTÁ AQUI ---
-      // Em vez de só chamar a função, vamos esperar o áudio carregar
-      await prepararEPlayAudio(data.response);
+      // 2. PARALELISMO: Removemos o 'await' daqui para não travar a UI
+      setIsTyping(false); 
+      falarESincronizar(data.response); // Chamamos sem esperar terminar
 
     } catch (erro) {
       toast({ title: "Erro", description: "Falha na conexão.", variant: "destructive" });
-      setIsTyping(false); // Libera se der erro
+      setIsTyping(false);
     }
   };
 
-  // Crie ou ajuste essa função para gerenciar a promessa do áudio
-  const prepararEPlayAudio = (texto) => {
-    return new Promise(async (resolve) => {
-      try {
-        const ttsResponse = await fetch(`${API}/tts`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: texto })
-        });
+  const falarESincronizar = async (texto) => {
+    if (!texto) return;
 
-        const blob = await ttsResponse.blob();
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
+    // A. Começa a digitar imediatamente para o usuário ler
+    dispararDigitação(texto);
 
-        audio.oncanplaythrough = () => {
-          // Quando o áudio estiver pronto, liberamos a interface
-          setIsTyping(false); 
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            type: 'bot',
-            content: texto,
-            timestamp: new Date()
-          }]);
-          
-          // Se você tiver um estado para o vídeo do Antônio falando:
-          // setIsVideoPlaying(true); 
-          audio.play();
-        };
+    try {
+      // B. Busca o áudio em background
+      const response = await fetch(`${API}/tts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: texto }),
+      });
 
-        audio.onended = () => {
-          // setIsVideoPlaying(false); 
-          resolve(); // Finaliza a promessa quando o áudio acaba
-        };
+      if (!response.ok) return;
 
-      } catch (e) {
-        console.error("Erro no áudio:", e);
-        // Se o áudio falhar, mostra o texto de qualquer jeito para não travar
-        setIsTyping(false);
-        setMessages(prev => [...prev, { id: Date.now(), type: 'bot', content: texto }]);
-        resolve();
-      }
-    });
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      
+      // C. O VÍDEO SÓ "SALTA" QUANDO O ÁUDIO REALMENTE COMEÇAR
+      audio.onplay = () => {
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
+      };
+
+      audio.onended = () => {
+        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+        URL.revokeObjectURL(url);
+      };
+
+      // Toca o áudio assim que carregar (o navegador gerencia o buffer)
+      await audio.play();
+
+    } catch (error) {
+      console.warn("Áudio falhou, mas o texto já está na tela.");
+    }
   };
   const handleMicToggle = () => {
     if (isListening) {

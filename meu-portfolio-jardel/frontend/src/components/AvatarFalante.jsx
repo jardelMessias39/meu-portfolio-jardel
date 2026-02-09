@@ -58,10 +58,10 @@ imagemParado = "/avatar-parado.png",
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
           estaFalando ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ 
-          transform: 'scale(1.1)', // Mesma escala da imagem para não dar "pulo"
-          objectPosition: '40% 10%' // Mesmo posicionamento da imagem
-        }}
+            style={{ 
+        transform: 'scale(1.1)', 
+        objectPosition: '50% 10%' // Mantenha 50% aqui
+      }}
       />
     </div>
 
