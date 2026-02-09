@@ -50,15 +50,10 @@ const Chatbot = ({ isOpen, onToggle }) => {
     i++;
     if (i >= textoCompleto.length) {
       clearInterval(timer);
-      // AVISO: A digitação acabou! Se não houver áudio tocando, para o vídeo em 1.5s
-      setTimeout(() => {
-        // Só disparar o "parar" se não houver um áudio tocando (checa via variável global ou estado)
-        if (!window.audioTocando) {
-          window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-        }
-      }, 1500); // 1.5 segundo de "respiro" após o texto sumir
+      // REMOVEMOS o setTimeout e o dispatch daqui! 
+      // Deixamos o controle apenas para o evento do áudio.
     }
-  }, 50); // Velocidade da digitação (50ms é um ritmo natural)
+  }, 40); // Ajustei para 40ms para ser levemente mais rápido
 };
 
 // 2. Ajuste na função falarTexto
@@ -100,42 +95,43 @@ const handleSendMessage = async (textoParaEnviar) => {
   };
 
   const falarESincronizar = async (texto) => {
-    if (!texto) return;
+  if (!texto) return;
 
-    // A. Começa a digitar imediatamente para o usuário ler
-    dispararDigitação(texto);
+  dispararDigitação(texto);
 
-    try {
-      // B. Busca o áudio em background
-      const response = await fetch(`${API}/tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: texto }),
-      });
+  try {
+    const response = await fetch(`${API}/tts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: texto }),
+    });
 
-      if (!response.ok) return;
+    if (!response.ok) return;
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      
-      // C. O VÍDEO SÓ "SALTA" QUANDO O ÁUDIO REALMENTE COMEÇAR
-      audio.onplay = () => {
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
-      };
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    
+    audio.onplay = () => {
+      // Liga o vídeo exatamente quando o som começa
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: true }));
+    };
 
-      audio.onended = () => {
-        window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
-        URL.revokeObjectURL(url);
-      };
+    audio.onended = () => {
+      // DESLIGA o vídeo exatamente quando o som termina
+      window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+      URL.revokeObjectURL(url);
+    };
 
-      // Toca o áudio assim que carregar (o navegador gerencia o buffer)
-      await audio.play();
+    await audio.play();
 
-    } catch (error) {
-      console.warn("Áudio falhou, mas o texto já está na tela.");
-    }
-  };
+  } catch (error) {
+    // Se o áudio falhar, o vídeo para logo após a digitação como segurança
+    setTimeout(() => {
+       window.dispatchEvent(new CustomEvent("ia-falando", { detail: false }));
+    }, 2000);
+  }
+};
   const handleMicToggle = () => {
     if (isListening) {
       recognitionRef.current?.stop();
