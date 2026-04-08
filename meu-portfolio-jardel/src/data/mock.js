@@ -117,6 +117,23 @@ export const skills = {
   github: "https://github.com/jardelmessias39/Dashboard-Financeiro-PME",
   demo: "https://github.com/jardelMessias39/Dashboard-Financeiro-PME" 
 },
+{
+  id: 8,
+  title: "Profiz - Marketplace de Serviços",
+  category: "Mobile & Full Stack",
+  image: "/profiz-preview.png", // Lembre de colocar um print do app aqui!
+  description: "Plataforma completa para conexão entre prestadores de serviços e clientes, com sistema de compra de leads e geolocalização.",
+  objective: "Facilitar a contratação de serviços profissionais através de um ecossistema seguro e eficiente para ambos os lados.",
+  technologies: ["Flutter", "FastAPI (Python)", "Supabase", "Google Maps API", "Mercado Pago SDK"],
+  features: [
+    "Geolocalização em tempo real com Google Maps",
+    "Sistema de compra de leads via Mercado Pago",
+    "Chat integrado entre cliente e profissional",
+    "Gestão de solicitações e filtros por categoria de serviço"
+  ],
+  github: "https://github.com/jardelmessias39/Profiz",
+  demo: "https://www.jardelmessias.com.br" // Use o seu domínio aqui
+},
 
 
 ];
