@@ -1,5 +1,7 @@
 // Mock data para o portfólio
 
+import { lstat } from "node:fs";
+
 export const profileData = {
   name: "Jardel Messias",
   title: "Desenvolvedor Júnior Full Stack",
@@ -120,8 +122,8 @@ export const skills = {
 {
   id: 8,
   title: "Profiz - Marketplace de Serviços",
-  category: "Mobile & Full Stack",
-  image: "/profiz-preview.jpeg", // Lembre de colocar um print do app aqui!
+  category: "Web Development",
+  image: "/profiz-preview.jpeg",// Lembre de colocar um print do app aqui!
   description: "Plataforma completa para conexão entre prestadores de serviços e clientes, com sistema de compra de leads e geolocalização.",
   objective: "Facilitar a contratação de serviços profissionais através de um ecossistema seguro e eficiente para ambos os lados.",
   technologies: ["Flutter", "FastAPI (Python)", "Supabase", "Google Maps API", "Mercado Pago SDK"],
