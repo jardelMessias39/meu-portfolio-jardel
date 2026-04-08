@@ -121,7 +121,7 @@ export const skills = {
   id: 8,
   title: "Profiz - Marketplace de Serviços",
   category: "Mobile & Full Stack",
-  image: "/profiz-preview.png", // Lembre de colocar um print do app aqui!
+  image: "/profiz-preview.jpeg", // Lembre de colocar um print do app aqui!
   description: "Plataforma completa para conexão entre prestadores de serviços e clientes, com sistema de compra de leads e geolocalização.",
   objective: "Facilitar a contratação de serviços profissionais através de um ecossistema seguro e eficiente para ambos os lados.",
   technologies: ["Flutter", "FastAPI (Python)", "Supabase", "Google Maps API", "Mercado Pago SDK"],
@@ -175,7 +175,7 @@ export const chatbotResponses = {
   
   experience: "O Jardel iniciou sua jornada prática na programação em junho de 2025, integrando a comunidade DevClub. Ele possui uma base sólida acadêmica, sendo formado em Licenciatura em Informática pela UNIT desde 2019. Atualmente, domina tecnologias como HTML5, CSS3, JavaScript e React, com foco em arquiteturas modernas.",
   
-  projects: "O portfólio atual conta com 7 projetos estratégicos: \n1. Jogo Embaralhado (Lógica e UX)\n2. Chuva de Palavras (Game Loop)\n3. Acarajé do Diego (E-commerce Full Stack)\n4. Dashboard Financeiro PME (Análise de Dados)\n5. DevBurger (Sistema de Delivery)\n6. App do Tempo (Integração de APIs)\n7. Comidas Típicas Brasileiras (Site de Receitas)\nQual deles você gostaria de detalhar?",
+  projects: "O portfólio atual conta com 8 projetos estratégicos: \n1. Profiz (Marketplace & Leads)\n2. Jogo Embaralhado (Lógica e UX)\n3. Chuva de Palavras (Game Loop)\n4. Acarajé do Diego (E-commerce Full Stack)\n5. Dashboard Financeiro PME (Análise de Dados)\n6. DevBurger (Sistema de Delivery)\n7. App do Tempo (Integração de APIs)\n8. Comidas Típicas Brasileiras (Site de Receitas)\nQual deles você gostaria de detalhar?",
   
   motivation: "O que move o Jardel é a capacidade de transformar linhas de código em soluções visuais e funcionais que resolvem problemas reais. Ele acredita que a tecnologia é a ferramenta mais poderosa para gerar impacto positivo e produtividade na vida das pessoas.",
   
