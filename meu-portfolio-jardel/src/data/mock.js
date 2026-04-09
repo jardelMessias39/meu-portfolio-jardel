@@ -26,15 +26,34 @@ export const skills = {
  export const projects = [
   {
     id: 1,
-    title: "Jogo Embaralhado",
-    category: "Game Development",
-    image: "/Shuffle-preview.png",
-    description: "Um quebra-cabeça interativo que desafia a percepção lógica do usuário.",
-    objective: "Explorar a manipulação de canvas e suporte avançado para dispositivos móveis.",
-    technologies: ["JavaScript", "HTML5", "CSS3", "Web Audio API"],
-    features: ["Rotação de peças", "Suporte a Touch Events", "Playlist de fundo"],
-    github: "https://github.com/jardelMessias39/projeto-embrulhado", // Substitua pelo seu link real
-    demo: "https://jardelmessias39.github.io/projeto-embrulhado/" // Substitua pelo seu link real
+
+  title: "Profiz - Marketplace de Serviços",
+
+  category: "Web Development",
+
+  image: "/profiz-preview.jpeg",// Lembre de colocar um print do app aqui!
+
+  description: "Plataforma completa para conexão entre prestadores de serviços e clientes, com sistema de compra de leads e geolocalização.",
+
+  objective: "Facilitar a contratação de serviços profissionais através de um ecossistema seguro e eficiente para ambos os lados.",
+
+  technologies: ["Flutter", "FastAPI (Python)", "Supabase", "Google Maps API", "Mercado Pago SDK"],
+
+  features: [
+
+    "Geolocalização em tempo real com Google Maps",
+
+    "Sistema de compra de leads via Mercado Pago",
+
+    "Chat integrado entre cliente e profissional",
+
+    "Gestão de solicitações e filtros por categoria de serviço"
+
+  ],
+
+  github: "https://github.com/jardelmessias39/Profiz",
+
+  demo: "https://www.jardelmessias.com.br" // Use o seu domínio aqui
   },
   {
     id: 2,
@@ -120,21 +139,16 @@ export const skills = {
   demo: "https://github.com/jardelMessias39/Dashboard-Financeiro-PME" 
 },
 {
-  id: 8,
-  title: "Profiz - Marketplace de Serviços",
-  category: "Web Development",
-  image: "/profiz-preview.jpeg",// Lembre de colocar um print do app aqui!
-  description: "Plataforma completa para conexão entre prestadores de serviços e clientes, com sistema de compra de leads e geolocalização.",
-  objective: "Facilitar a contratação de serviços profissionais através de um ecossistema seguro e eficiente para ambos os lados.",
-  technologies: ["Flutter", "FastAPI (Python)", "Supabase", "Google Maps API", "Mercado Pago SDK"],
-  features: [
-    "Geolocalização em tempo real com Google Maps",
-    "Sistema de compra de leads via Mercado Pago",
-    "Chat integrado entre cliente e profissional",
-    "Gestão de solicitações e filtros por categoria de serviço"
-  ],
-  github: "https://github.com/jardelmessias39/Profiz",
-  demo: "https://www.jardelmessias.com.br" // Use o seu domínio aqui
+      id: 8,
+    title: "Jogo Embaralhado",
+    category: "Game Development",
+    image: "/Shuffle-preview.png",
+    description: "Um quebra-cabeça interativo que desafia a percepção lógica do usuário.",
+    objective: "Explorar a manipulação de canvas e suporte avançado para dispositivos móveis.",
+    technologies: ["JavaScript", "HTML5", "CSS3", "Web Audio API"],
+    features: ["Rotação de peças", "Suporte a Touch Events", "Playlist de fundo"],
+    github: "https://github.com/jardelMessias39/projeto-embrulhado", // Substitua pelo seu link real
+    demo: "https://jardelmessias39.github.io/projeto-embrulhado/" // Substitua pelo seu link realu domínio aqui
 },
 
 
