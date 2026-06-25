@@ -27,11 +27,11 @@ export const skills = {
   {
     id: 1,
 
-  title: "Profiz - Marketplace de Serviços",
+  title: "EloPro - Marketplace de Serviços",
 
   category: "Web Development",
 
-  image: "/profiz-preview.jpeg",// Lembre de colocar um print do app aqui!
+  image: "/geoElopro-preview.jpeg",// Lembre de colocar um print do app aqui!
 
   description: "Plataforma completa para conexão entre prestadores de serviços e clientes, com sistema de compra de leads e geolocalização.",
 
@@ -51,7 +51,7 @@ export const skills = {
 
   ],
 
-  github: "https://github.com/jardelmessias39/Profiz",
+  github: "https://github.com/jardelmessias39/EloPro",
 
   demo: "https://www.jardelmessias.com.br" // Use o seu domínio aqui
   },
@@ -191,7 +191,7 @@ export const chatbotResponses = {
   
   experience: "O Jardel iniciou sua jornada prática na programação em junho de 2025, integrando a comunidade DevClub. Ele possui uma base sólida acadêmica, sendo formado em Licenciatura em Informática pela UNIT desde 2019. Atualmente, domina tecnologias como HTML5, CSS3, JavaScript e React, com foco em arquiteturas modernas.",
   
-  projects: "O portfólio atual conta com 8 projetos estratégicos: \n1. Profiz (Marketplace & Leads)\n2. Jogo Embaralhado (Lógica e UX)\n3. Chuva de Palavras (Game Loop)\n4. Acarajé do Diego (E-commerce Full Stack)\n5. Dashboard Financeiro PME (Análise de Dados)\n6. DevBurger (Sistema de Delivery)\n7. App do Tempo (Integração de APIs)\n8. Comidas Típicas Brasileiras (Site de Receitas)\nQual deles você gostaria de detalhar?",
+  projects: "O portfólio atual conta com 8 projetos estratégicos: \n1. EloPro (Marketplace & Leads)\n2. Jogo Embaralhado (Lógica e UX)\n3. Chuva de Palavras (Game Loop)\n4. Acarajé do Diego (E-commerce Full Stack)\n5. Dashboard Financeiro PME (Análise de Dados)\n6. DevBurger (Sistema de Delivery)\n7. App do Tempo (Integração de APIs)\n8. Comidas Típicas Brasileiras (Site de Receitas)\nQual deles você gostaria de detalhar?",
   
   motivation: "O que move o Jardel é a capacidade de transformar linhas de código em soluções visuais e funcionais que resolvem problemas reais. Ele acredita que a tecnologia é a ferramenta mais poderosa para gerar impacto positivo e produtividade na vida das pessoas.",
   

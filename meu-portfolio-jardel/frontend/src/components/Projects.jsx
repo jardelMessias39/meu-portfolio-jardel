@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Github, Target, Cpu } from 'lucide-react';
+import { ExternalLink, Github, Target, Cpu, Bot, Smartphone } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { projects } from '../data/mock';
@@ -11,6 +11,10 @@ const Projects = () => {
         return <Cpu className="h-5 w-5" />;
       case 'Web Development':
         return <ExternalLink className="h-5 w-5" />;
+      case 'IA / Automação':
+        return <Bot className="h-5 w-5" />;
+      case 'Mobile Development':
+        return <Smartphone className="h-5 w-5" />;
       default:
         return <Target className="h-5 w-5" />;
     }
@@ -22,6 +26,10 @@ const Projects = () => {
         return 'bg-green-100 text-green-700';
       case 'Web Development':
         return 'bg-blue-100 text-blue-700';
+      case 'IA / Automação':
+        return 'bg-purple-100 text-purple-700';
+      case 'Mobile Development':
+        return 'bg-orange-100 text-orange-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
@@ -110,17 +118,24 @@ const Projects = () => {
                     </Button>
                   </a>
 
-                  {/* Botão GitHub */}
-                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="w-full"
-                    >
-                      <Github className="h-4 w-4 mr-2" />
-                      Código
-                    </Button>
-                  </a>
+                  {/* Botão GitHub ou badge Privado */}
+                  {project.private ? (
+                    <div className="flex-1 flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-500 font-medium">
+                      <Github className="h-4 w-4" />
+                      🔒 Privado
+                    </div>
+                  ) : (
+                    <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="w-full"
+                      >
+                        <Github className="h-4 w-4 mr-2" />
+                        Código
+                      </Button>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

@@ -11,7 +11,7 @@ const Projects = () => {
         return <Cpu className="h-5 w-5" />;
       case 'Web Development':
         return <ExternalLink className="h-5 w-5" />;
-      case 'Mobile & Full Stack': // Adicionado para o Profiz
+      case 'Mobile & Full Stack': // Adicionado para o EloPro
         return <Cpu className="h-5 w-5" />; 
       default:
         return <Target className="h-5 w-5" />;
@@ -24,7 +24,7 @@ const Projects = () => {
         return 'bg-green-100 text-green-700';
       case 'Web Development':
         return 'bg-blue-100 text-blue-700';
-      case 'Mobile & Full Stack': // Adicionado para o Profiz (Cor roxa para destacar)
+      case 'Mobile & Full Stack': // Adicionado para o EloPro (Cor roxa para destacar)
         return 'bg-purple-100 text-purple-700';
       default:
         return 'bg-gray-100 text-gray-700';
